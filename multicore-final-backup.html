@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multicore Management | Back-Office Support for UK Tradesmen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#06101e;--blue:#3871c1;--amber:#f68712;--green:#40b93c;--dark:#0a1628;--light:#F4F6FA;--white:#ffffff;--gray:#6b7a90;--card-radius:18px;--section-pad:100px 0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:'Inter',sans-serif;color:#1a2332;background:var(--white);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,h5,h6{font-family:'Montserrat',sans-serif;font-weight:700;line-height:1.15}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.section-pad{padding:var(--section-pad)}
+.section-eyebrow{font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--blue);margin-bottom:12px}
+.section-title{font-size:clamp(2rem,4vw,2.8rem);margin-bottom:16px}
+.section-sub{font-size:1.1rem;color:var(--gray);max-width:600px;line-height:1.7}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:15px 32px;border-radius:50px;font-family:'Montserrat',sans-serif;font-weight:600;font-size:.95rem;border:none;cursor:pointer;transition:all .3s ease;position:relative;overflow:hidden}
+.btn-primary{background:var(--amber);color:#fff;box-shadow:0 4px 20px rgba(246,135,18,.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(246,135,18,.45)}
+.btn-primary::after{content:'';position:absolute;top:-50%;left:-100%;width:60%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);transform:rotate(25deg);transition:none}
+.btn-primary:hover::after{animation:shimmer 1s forwards}
+@keyframes shimmer{0%{left:-100%}100%{left:150%}}
+.btn-outline{border:2px solid rgba(255,255,255,.4);color:#fff;background:transparent;backdrop-filter:blur(4px)}
+.btn-outline:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.7);transform:translateY(-2px)}
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-d1{transition-delay:.1s}.reveal-d2{transition-delay:.2s}.reveal-d3{transition-delay:.3s}.reveal-d4{transition-delay:.4s}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;width:100%;z-index:1000;padding:18px 0;transition:all .4s ease}
+.nav.scrolled{background:rgba(6,16,30,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(56,113,193,.12);padding:10px 0;box-shadow:0 4px 30px rgba(0,0,0,.3)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:0 24px}
+.nav-logo{font-family:'Montserrat',sans-serif;font-size:1.3rem;font-weight:800;color:#fff;letter-spacing:1px}
+.nav-logo span{display:block;font-size:.65rem;font-weight:600;letter-spacing:4px;color:var(--amber);margin-top:-2px}
+.nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+.nav-links a{color:rgba(255,255,255,.8);font-size:.87rem;font-weight:500;transition:color .3s;position:relative}
+.nav-links a:hover{color:#fff}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--amber);transition:width .3s}
+.nav-links a:hover::after{width:100%}
+.nav-phone{color:rgba(255,255,255,.9);font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:6px}
+.nav-cta{background:var(--amber);color:#fff;padding:10px 24px;border-radius:50px;font-family:'Montserrat',sans-serif;font-weight:600;font-size:.85rem;transition:all .3s;border:none;cursor:pointer}
+.nav-cta:hover{background:#e57a00;transform:translateY(-1px);box-shadow:0 4px 15px rgba(246,135,18,.4)}
+.nav-right{display:flex;align-items:center;gap:20px}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:5px;background:none;border:none}
+.hamburger span{width:24px;height:2px;background:#fff;transition:all .3s;display:block}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;height:100vh;display:flex;align-items:center;overflow:hidden;background:linear-gradient(135deg,#06101e 0%,#0d1f3c 50%,#06101e 100%)}
+#heroCanvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1}
+.hero-vignette{position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;background:radial-gradient(ellipse at 30% 50%,transparent 0%,rgba(6,16,30,.4) 70%,rgba(6,16,30,.8) 100%);pointer-events:none}
+.hero-content{position:relative;z-index:3;max-width:1200px;margin:0 auto;padding:140px 24px 80px;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:60px}
+.hero-left{max-width:600px}
+.hero-logo-wrap{margin-bottom:24px}
+.hero-logo-img{height:140px;width:auto}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:50px;background:rgba(56,113,193,.15);border:1px solid rgba(56,113,193,.3);color:var(--blue);font-size:.72rem;font-weight:700;letter-spacing:2px;font-family:'Montserrat',sans-serif;margin-bottom:24px}
+.hero-badge::before{content:'';width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.hero h1{font-size:clamp(2.4rem,5vw,3.6rem);color:#fff;margin-bottom:20px;line-height:1.1}
+.hero h1 .amber{color:var(--amber)}
+.hero-sub{font-size:1.12rem;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:32px;max-width:480px}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+.hero-trust{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.5);font-size:.85rem}
+.hero-stars{display:flex;gap:2px;color:var(--amber);font-size:1rem}
+
+/* STATS BAR */
+.stats-bar{position:relative;z-index:3;background:rgba(255,255,255,.03);border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(10px);background:var(--navy)}
+.stats-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);padding:0}
+.stat-item{padding:32px 24px;text-align:center;border-right:1px solid rgba(255,255,255,.06);transition:background .3s}
+.stat-item:last-child{border-right:none}
+.stat-item:hover{background:rgba(56,113,193,.08)}
+.stat-num{font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:800;color:var(--amber);margin-bottom:6px}
+.stat-label{font-size:.85rem;color:rgba(255,255,255,.55);font-weight:500}
+
+/* TRADE STRIP */
+.trade-strip{padding:0;overflow:hidden;background:var(--navy)}
+.trade-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.trade-img-wrap{position:relative;height:280px;overflow:hidden;cursor:pointer}
+.trade-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.16,1,.3,1);filter:brightness(.65)}
+.trade-img-wrap:hover img{transform:scale(1.12);filter:brightness(.85)}
+.trade-img-wrap .trade-label{position:absolute;bottom:20px;left:20px;color:#fff;font-family:'Montserrat',sans-serif;font-weight:700;font-size:1rem;z-index:2;padding:8px 18px;background:rgba(6,16,30,.6);border-radius:8px;backdrop-filter:blur(4px)}
+.trade-img-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(6,16,30,.6) 0%,transparent 50%);pointer-events:none}
+
+/* PROBLEMS */
+.problems{padding:var(--section-pad);background:var(--light)}
+.problems-header{text-align:center;margin-bottom:60px}
+.problems-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;max-width:1000px;margin:0 auto}
+.problem-card{background:#fff;border-radius:var(--card-radius);padding:40px 32px;text-align:center;position:relative;overflow:hidden;transition:all .4s cubic-bezier(.16,1,.3,1);border:1px solid rgba(0,0,0,.06);box-shadow:0 2px 20px rgba(0,0,0,.04)}
+.problem-card:hover{transform:translateY(-8px);box-shadow:0 20px 50px rgba(0,0,0,.1)}
+.problem-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+.problem-card:nth-child(1)::before{background:var(--amber)}
+.problem-card:nth-child(2)::before{background:var(--blue)}
+.problem-card:nth-child(3)::before{background:var(--green)}
+.problem-icon{width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:1.8rem}
+.problem-card:nth-child(1) .problem-icon{background:rgba(246,135,18,.1);color:var(--amber)}
+.problem-card:nth-child(2) .problem-icon{background:rgba(56,113,193,.1);color:var(--blue)}
+.problem-card:nth-child(3) .problem-icon{background:rgba(64,185,60,.1);color:var(--green)}
+.problem-card h3{font-size:1.25rem;margin-bottom:12px}
+.problem-card p{color:var(--gray);line-height:1.7;font-size:.95rem}
+
+/* WHY CHOOSE */
+.why-choose{padding:var(--section-pad);background:var(--white)}
+.why-header{text-align:center;margin-bottom:60px}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;max-width:1100px;margin:0 auto}
+.why-card{text-align:center;padding:40px 28px;border-radius:var(--card-radius);border:1px solid rgba(0,0,0,.06);transition:all .4s cubic-bezier(.16,1,.3,1);background:#fff}
+.why-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,.08);border-color:rgba(56,113,193,.3)}
+.why-card-icon{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,rgba(56,113,193,.1),rgba(56,113,193,.05));display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2rem;color:var(--blue)}
+.why-card h3{font-size:1.15rem;margin-bottom:10px}
+.why-card p{color:var(--gray);line-height:1.7;font-size:.93rem}
+
+/* SPLIT SECTIONS */
+.split-section{display:grid;grid-template-columns:1fr 1fr;min-height:500px}
+.split-img{position:relative;overflow:hidden}
+.split-img img{width:100%;height:100%;object-fit:cover;transition:transform .8s}
+.split-section:hover .split-img img{transform:scale(1.03)}
+.split-text{display:flex;flex-direction:column;justify-content:center;padding:60px 80px}
+.split-text h2{font-size:clamp(1.8rem,3vw,2.4rem);margin-bottom:16px}
+.split-text p{color:var(--gray);line-height:1.8;font-size:1.02rem;margin-bottom:20px}
+.split-text ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+.split-text ul li{display:flex;align-items:center;gap:10px;font-size:.95rem;font-weight:500}
+.split-text ul li .li-check{width:24px;height:24px;border-radius:50%;background:rgba(64,185,60,.12);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0}
+.split-dark{background:var(--navy)}
+.split-dark .split-text h2{color:#fff}
+.split-dark .split-text p{color:rgba(255,255,255,.6)}
+.split-dark .split-text ul li{color:rgba(255,255,255,.8)}
+
+/* HOW IT WORKS */
+.how{padding:var(--section-pad);background:var(--light)}
+.how-header{text-align:center;margin-bottom:70px}
+.how-steps{display:flex;justify-content:center;gap:60px;position:relative;max-width:900px;margin:0 auto}
+.how-steps::before{content:'';position:absolute;top:40px;left:calc(16.66% + 30px);right:calc(16.66% + 30px);height:3px;background:linear-gradient(90deg,var(--blue),var(--amber),var(--green));border-radius:2px}
+.how-step{text-align:center;flex:1;position:relative;z-index:1}
+.how-num{width:80px;height:80px;border-radius:50%;background:var(--white);border:3px solid var(--blue);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:1.6rem;font-weight:800;color:var(--blue);margin:0 auto 20px;box-shadow:0 4px 20px rgba(56,113,193,.15);transition:all .3s}
+.how-step:nth-child(2) .how-num{border-color:var(--amber);color:var(--amber);box-shadow:0 4px 20px rgba(246,135,18,.15)}
+.how-step:nth-child(3) .how-num{border-color:var(--green);color:var(--green);box-shadow:0 4px 20px rgba(64,185,60,.15)}
+.how-step:hover .how-num{transform:scale(1.1)}
+.how-step h3{font-size:1.1rem;margin-bottom:8px}
+.how-step p{color:var(--gray);font-size:.9rem;line-height:1.6}
+
+/* SERVICES GRID */
+.services{padding:var(--section-pad);background:var(--white)}
+.services-header{text-align:center;margin-bottom:60px}
+.services-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;max-width:1100px;margin:0 auto}
+.service-card{padding:32px 24px;border-radius:var(--card-radius);border:1px solid rgba(0,0,0,.06);text-align:center;transition:all .4s cubic-bezier(.16,1,.3,1);background:var(--white);cursor:default}
+.service-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,.08);border-color:rgba(56,113,193,.25)}
+.service-icon{font-size:2rem;margin-bottom:14px;display:block}
+.service-card h4{font-size:.95rem;font-weight:700;margin-bottom:6px}
+.service-card p{font-size:.82rem;color:var(--gray);line-height:1.5}
+
+/* WHY TRADESMEN */
+.tradesmen{padding:var(--section-pad);background:var(--light)}
+.tradesmen-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;max-width:1100px;margin:0 auto}
+.tradesmen-checks{display:flex;flex-direction:column;gap:20px}
+.tradesmen-check{display:flex;align-items:center;gap:14px;font-size:1.05rem;font-weight:500}
+.check-icon{width:32px;height:32px;border-radius:50%;background:rgba(64,185,60,.12);color:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;font-size:.85rem}
+.tradesmen-stats{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.tradesmen-stat{background:var(--white);border-radius:var(--card-radius);padding:32px 24px;text-align:center;border:1px solid rgba(0,0,0,.06);transition:all .3s}
+.tradesmen-stat:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.08)}
+.tradesmen-stat .big{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--blue);margin-bottom:4px}
+.tradesmen-stat .label{font-size:.85rem;color:var(--gray);font-weight:500}
+
+/* PHOTO GRID */
+.photo-grid-section{padding:40px 0;background:var(--white);overflow:hidden}
+.photo-mosaic{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:200px 200px;gap:8px;max-width:1200px;margin:0 auto;padding:0 24px}
+.photo-mosaic .pm-item{border-radius:12px;overflow:hidden;position:relative}
+.photo-mosaic .pm-item img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.photo-mosaic .pm-item:hover img{transform:scale(1.08)}
+.photo-mosaic .pm-item:nth-child(1){grid-column:span 2;grid-row:span 2}
+.photo-mosaic .pm-item::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(6,16,30,.25),transparent);pointer-events:none}
+
+/* PORTAL */
+.portal{padding:var(--section-pad);background:var(--navy);position:relative;overflow:hidden}
+.portal::before{content:'';position:absolute;top:-200px;right:-200px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(56,113,193,.15),transparent 70%);pointer-events:none}
+.portal-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;max-width:1100px;margin:0 auto}
+.portal-text{color:#fff}
+.portal-text h2{font-size:clamp(1.8rem,3vw,2.4rem);margin-bottom:16px}
+.portal-text>p{color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:30px}
+.portal-features{display:flex;flex-direction:column;gap:20px}
+.portal-feat{display:flex;gap:14px;align-items:flex-start}
+.portal-feat-icon{width:44px;height:44px;border-radius:12px;background:rgba(56,113,193,.15);color:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.2rem}
+.portal-feat h4{color:#fff;font-size:1rem;margin-bottom:4px}
+.portal-feat p{color:rgba(255,255,255,.5);font-size:.88rem;line-height:1.5}
+.portal-mock{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px;backdrop-filter:blur(8px)}
+.portal-mock-header{display:flex;align-items:center;gap:10px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.portal-mock-dots{display:flex;gap:6px}
+.portal-mock-dots span{width:10px;height:10px;border-radius:50%}
+.portal-mock-dots span:nth-child(1){background:#ff5f57}
+.portal-mock-dots span:nth-child(2){background:#ffbd2e}
+.portal-mock-dots span:nth-child(3){background:#28c940}
+.portal-mock-title{color:rgba(255,255,255,.7);font-size:.8rem;font-weight:600;font-family:'Montserrat',sans-serif;letter-spacing:1px}
+.portal-mock-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+.pm-stat{background:rgba(255,255,255,.05);border-radius:12px;padding:16px;text-align:center;border:1px solid rgba(255,255,255,.06)}
+.pm-stat .pm-val{font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:2px}
+.pm-stat:nth-child(1) .pm-val{color:var(--blue)}
+.pm-stat:nth-child(2) .pm-val{color:var(--amber)}
+.pm-stat:nth-child(3) .pm-val{color:var(--green)}
+.pm-stat .pm-lbl{font-size:.7rem;color:rgba(255,255,255,.45);font-weight:500}
+.portal-mock-bars{display:flex;flex-direction:column;gap:10px}
+.pm-bar{display:flex;align-items:center;gap:10px}
+.pm-bar-label{font-size:.75rem;color:rgba(255,255,255,.5);width:80px;text-align:right}
+.pm-bar-track{flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+.pm-bar-fill{height:100%;border-radius:4px;transition:width 1.5s ease}
+
+/* PRICING */
+.pricing{padding:var(--section-pad);background:var(--light)}
+.pricing-header{text-align:center;margin-bottom:60px}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;max-width:1050px;margin:0 auto;align-items:start}
+.pricing-card{background:#fff;border-radius:var(--card-radius);padding:40px 32px;border:1px solid rgba(0,0,0,.06);transition:all .4s;position:relative}
+.pricing-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.08)}
+.pricing-card.featured{border:2px solid transparent;background-image:linear-gradient(#fff,#fff),linear-gradient(135deg,var(--blue),var(--amber));background-origin:padding-box,border-box;background-clip:padding-box,border-box;transform:scale(1.04);box-shadow:0 20px 50px rgba(56,113,193,.15)}
+.pricing-card.featured:hover{transform:scale(1.04) translateY(-4px)}
+.pricing-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--blue),var(--amber));color:#fff;padding:6px 20px;border-radius:50px;font-size:.75rem;font-weight:700;font-family:'Montserrat',sans-serif;letter-spacing:1px;white-space:nowrap}
+.pricing-name{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:8px}
+.pricing-price{font-family:'Montserrat',sans-serif;font-size:1.6rem;font-weight:800;color:var(--blue);margin-bottom:20px}
+.pricing-features{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
+.pricing-features li{display:flex;align-items:center;gap:10px;font-size:.9rem;color:#555}
+.pricing-features li::before{content:'\2713';color:var(--green);font-weight:700;font-size:.8rem}
+.pricing-card .btn{width:100%;justify-content:center}
+
+/* TESTIMONIALS */
+.testimonials{padding:var(--section-pad);background:var(--white)}
+.testimonials-header{text-align:center;margin-bottom:60px}
+.testimonials-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:1100px;margin:0 auto}
+.testimonial-card{background:var(--light);border-radius:var(--card-radius);padding:40px;border:1px solid rgba(0,0,0,.04);transition:all .4s}
+.testimonial-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.06)}
+.testimonial-stars{color:var(--amber);font-size:1.1rem;margin-bottom:16px;display:flex;gap:2px}
+.testimonial-text{font-size:.93rem;color:#444;line-height:1.8;margin-bottom:24px;font-style:italic}
+.testimonial-author{display:flex;align-items:center;gap:14px}
+.testimonial-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--navy));display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Montserrat',sans-serif;font-weight:700;font-size:1rem}
+.testimonial-name{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.95rem}
+.testimonial-role{font-size:.82rem;color:var(--gray)}
+
+/* CONTACT */
+.contact{padding:var(--section-pad);background:var(--light)}
+.contact-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;max-width:1050px;margin:0 auto}
+.contact-info h2{font-size:clamp(1.8rem,3vw,2.2rem);margin-bottom:16px}
+.contact-info>p{color:var(--gray);line-height:1.7;margin-bottom:30px}
+.contact-details{display:flex;flex-direction:column;gap:18px}
+.contact-detail{display:flex;align-items:center;gap:12px;font-size:.95rem}
+.contact-detail-icon{width:40px;height:40px;border-radius:12px;background:rgba(56,113,193,.1);color:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem}
+.contact-form{background:var(--white);border-radius:var(--card-radius);padding:40px;border:1px solid rgba(0,0,0,.06);box-shadow:0 4px 20px rgba(0,0,0,.04)}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:.85rem;font-weight:600;margin-bottom:6px;color:#1a2332}
+.form-group input,.form-group textarea{width:100%;padding:13px 16px;border:1px solid rgba(0,0,0,.1);border-radius:12px;font-family:'Inter',sans-serif;font-size:.95rem;transition:all .3s;background:var(--light)}
+.form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(56,113,193,.1);background:#fff}
+.form-group textarea{resize:vertical;min-height:100px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* CTA BANNER */
+.cta-banner{padding:80px 0;background:linear-gradient(135deg,var(--navy) 0%,#132d54 50%,var(--navy) 100%);text-align:center;position:relative;overflow:hidden}
+.cta-banner::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 50% 50%,rgba(56,113,193,.12),transparent 60%);pointer-events:none}
+.cta-banner h2{color:#fff;font-size:clamp(1.8rem,3.5vw,2.6rem);margin-bottom:16px;position:relative;z-index:1}
+.cta-banner p{color:rgba(255,255,255,.6);font-size:1.1rem;margin-bottom:32px;position:relative;z-index:1}
+.cta-banner .btn{position:relative;z-index:1}
+
+/* FOOTER */
+.footer{background:var(--navy);padding:60px 0 0;color:rgba(255,255,255,.6)}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;max-width:1200px;margin:0 auto;padding:0 24px 40px}
+.footer-brand{display:flex;flex-direction:column;gap:14px}
+.footer-brand p{font-size:.9rem;line-height:1.7}
+.footer-socials{display:flex;gap:10px}
+.footer-social{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;transition:all .3s;cursor:pointer;color:rgba(255,255,255,.5)}
+.footer-social:hover{background:var(--blue);color:#fff;transform:translateY(-2px)}
+.footer-col h4{color:#fff;font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:700;margin-bottom:16px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer-col ul li a{font-size:.88rem;transition:color .3s}
+.footer-col ul li a:hover{color:var(--amber)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding:20px 24px;text-align:center;font-size:.82rem;max-width:1200px;margin:0 auto}
+
+/* MOBILE NAV */
+.mobile-menu{position:fixed;top:0;left:0;width:100%;height:100vh;background:rgba(6,16,30,.97);z-index:1001;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;backdrop-filter:blur(20px);opacity:0;pointer-events:none;transition:opacity .3s}
+.mobile-menu.open{opacity:1;pointer-events:all}
+.mobile-menu a{color:#fff;font-family:'Montserrat',sans-serif;font-size:1.3rem;font-weight:600;transition:color .3s}
+.mobile-menu a:hover{color:var(--amber)}
+.mobile-close{position:absolute;top:24px;right:24px;color:#fff;font-size:2rem;cursor:pointer;background:none;border:none}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+.nav-links{display:none}
+.nav-phone{display:none}
+.hamburger{display:flex}
+.hero-content{grid-template-columns:1fr;text-align:center;padding-top:120px}
+.hero-left{max-width:100%;margin:0 auto}
+.hero-sub{margin:0 auto 32px}
+.hero-btns{justify-content:center}
+.hero-trust{justify-content:center}
+.stats-inner{grid-template-columns:repeat(2,1fr)}
+.trade-grid{grid-template-columns:repeat(2,1fr)}
+.problems-grid{grid-template-columns:1fr;max-width:400px;margin:0 auto}
+.why-grid{grid-template-columns:1fr;max-width:400px;margin:0 auto}
+.split-section{grid-template-columns:1fr}
+.split-img{height:300px}
+.split-text{padding:40px 24px}
+.how-steps{flex-direction:column;gap:40px}
+.how-steps::before{display:none}
+.services-grid{grid-template-columns:repeat(2,1fr)}
+.tradesmen-inner{grid-template-columns:1fr}
+.photo-mosaic{grid-template-columns:repeat(2,1fr);grid-template-rows:auto}
+.photo-mosaic .pm-item:nth-child(1){grid-column:span 2;grid-row:span 1}
+.portal-inner{grid-template-columns:1fr}
+.pricing-grid{grid-template-columns:1fr;max-width:400px;margin:0 auto}
+.pricing-card.featured{transform:none}
+.pricing-card.featured:hover{transform:translateY(-4px)}
+.testimonials-grid{grid-template-columns:1fr}
+.contact-inner{grid-template-columns:1fr}
+.footer-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+.stats-inner{grid-template-columns:1fr}
+.trade-grid{grid-template-columns:1fr}
+.services-grid{grid-template-columns:1fr}
+.form-row{grid-template-columns:1fr}
+.footer-grid{grid-template-columns:1fr}
+.tradesmen-stats{grid-template-columns:1fr}
+.trade-img-wrap{height:200px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+<div class="nav-inner">
+<a href="#" class="nav-logo">MULTICORE<span>MANAGEMENT</span></a>
+<ul class="nav-links">
+<li><a href="#services">Services</a></li>
+<li><a href="#about">About</a></li>
+<li><a href="#how">How It Works</a></li>
+<li><a href="#portal">Portal</a></li>
+<li><a href="#pricing">Pricing</a></li>
+<li><a href="#testimonials">Reviews</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+<div class="nav-right">
+<a href="tel:+44" class="nav-phone">
+<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3.09 5.18 2 2 0 0 1 5.07 3h3a2 2 0 0 1 2 1.72c.13.81.36 1.6.68 2.34a2 2 0 0 1-.45 2.11L8.91 10.6a16 16 0 0 0 6.49 6.49l1.43-1.39a2 2 0 0 1 2.11-.45c.74.32 1.53.55 2.34.68a2 2 0 0 1 1.72 2z"/></svg>
+Get in Touch
+</a>
+<button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Book a Free Call</button>
+<button class="hamburger" onclick="document.getElementById('mobileMenu').classList.add('open')" aria-label="Menu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+<button class="mobile-close" onclick="this.parentElement.classList.remove('open')">&times;</button>
+<a href="#services" onclick="this.parentElement.classList.remove('open')">Services</a>
+<a href="#about" onclick="this.parentElement.classList.remove('open')">About</a>
+<a href="#how" onclick="this.parentElement.classList.remove('open')">How It Works</a>
+<a href="#portal" onclick="this.parentElement.classList.remove('open')">Portal</a>
+<a href="#pricing" onclick="this.parentElement.classList.remove('open')">Pricing</a>
+<a href="#testimonials" onclick="this.parentElement.classList.remove('open')">Reviews</a>
+<a href="#contact" onclick="this.parentElement.classList.remove('open')">Contact</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+<canvas id="heroCanvas"></canvas>
+<div class="hero-vignette"></div>
+<div class="hero-content">
+<div class="hero-left">
+<div class="hero-logo-wrap">
+<img src="logo.png" alt="Multicore Management" class="hero-logo-img" onerror="this.style.display='none'">
+</div>
+<div class="hero-badge">BACK-OFFICE SUPPORT FOR UK TRADESMEN</div>
+<h1>Stay on the Tools.<br>We Run the <span class="amber">Rest.</span></h1>
+<p class="hero-sub">We handle your calls, emails, quotes, invoices and admin so you can focus on what you do best &mdash; the work on site.</p>
+<div class="hero-btns">
+<button class="btn btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Book a Free Call</button>
+<a href="#services" class="btn btn-outline">See Our Services</a>
+</div>
+<div class="hero-trust">
+<div class="hero-stars"><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span></div>
+Trusted by tradesmen across the UK
+</div>
+</div>
+<div class="hero-right"></div>
+</div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+<div class="stats-inner">
+<div class="stat-item"><div class="stat-num">16+</div><div class="stat-label">Years Experience</div></div>
+<div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Dedicated Support</div></div>
+<div class="stat-item"><div class="stat-num">UK Wide</div><div class="stat-label">Service Coverage</div></div>
+<div class="stat-item"><div class="stat-num">3</div><div class="stat-label">Flexible Packages</div></div>
+</div>
+</div>
+
+<!-- TRADE STRIP -->
+<section class="trade-strip">
+<div class="trade-grid">
+<div class="trade-img-wrap">
+<img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&h=400&fit=crop" alt="Electrical work">
+<div class="trade-label">Electrical</div>
+</div>
+<div class="trade-img-wrap">
+<img src="https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=600&h=400&fit=crop" alt="Plumbing work">
+<div class="trade-label">Plumbing</div>
+</div>
+<div class="trade-img-wrap">
+<img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&h=400&fit=crop" alt="Building work">
+<div class="trade-label">Building</div>
+</div>
+<div class="trade-img-wrap">
+<img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&h=400&fit=crop" alt="HVAC work">
+<div class="trade-label">HVAC</div>
+</div>
+</div>
+</section>
+
+<!-- PROBLEMS -->
+<section class="problems" id="about">
+<div class="container">
+<div class="problems-header reveal">
+<div class="section-eyebrow">Sound Familiar?</div>
+<h2 class="section-title">The 3 Problems We Fix</h2>
+<p class="section-sub" style="margin:0 auto">Most tradesmen are brilliant at their trade but drowning in admin. Here's what we see every single day.</p>
+</div>
+<div class="problems-grid">
+<div class="problem-card reveal reveal-d1">
+<div class="problem-icon">
+<svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+</div>
+<h3>Admin Overload</h3>
+<p>You're working 10-hour days on site then spending your evenings doing quotes, invoices, and emails. It's not sustainable.</p>
+</div>
+<div class="problem-card reveal reveal-d2">
+<div class="problem-icon">
+<svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94m-1 7.98v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 3.09 5.18 2 2 0 0 1 5.07 3h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.91 11.05a16 16 0 0 0 6 6l1.41-1.41a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 23 17.92z"/></svg>
+</div>
+<h3>Missed Enquiries</h3>
+<p>Every missed call is a missed job. When you're on site, you can't answer the phone &mdash; and customers move on fast.</p>
+</div>
+<div class="problem-card reveal reveal-d3">
+<div class="problem-icon">
+<svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+</div>
+<h3>No Systems</h3>
+<p>No CRM, no process, no consistency. Customer details on scraps of paper, quotes forgotten, invoices unsent.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section class="why-choose">
+<div class="container">
+<div class="why-header reveal">
+<div class="section-eyebrow">Why Us</div>
+<h2 class="section-title">Why Choose Multicore</h2>
+<p class="section-sub" style="margin:0 auto">We're not a generic VA service. We come from the trades &mdash; and that makes all the difference.</p>
+</div>
+<div class="why-grid">
+<div class="why-card reveal reveal-d1">
+<div class="why-card-icon">
+<svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+</div>
+<h3>On-Site Experience</h3>
+<p>We've worked on tools ourselves. We understand the language, the pace, and the pressures of trade work.</p>
+</div>
+<div class="why-card reveal reveal-d2">
+<div class="why-card-icon">
+<svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+</div>
+<h3>Wholesale Knowledge</h3>
+<p>We know your suppliers, your materials, and your margins. We can order stock and price jobs accurately.</p>
+</div>
+<div class="why-card reveal reveal-d3">
+<div class="why-card-icon">
+<svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+</div>
+<h3>Admin Expertise</h3>
+<p>Professional business support: CRM management, invoicing systems, communication workflows &mdash; done properly.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- SPLIT 1 -->
+<section class="split-section reveal">
+<div class="split-img">
+<img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&h=600&fit=crop" alt="Professional office support">
+</div>
+<div class="split-text">
+<div class="section-eyebrow">About Us</div>
+<h2>Your back office, professionally run.</h2>
+<p>While you're on site earning money, we're in the background making sure everything else runs like clockwork. Every call answered, every quote sent, every invoice chased.</p>
+<ul>
+<li><span class="li-check">&#10003;</span>Professional call answering in your business name</li>
+<li><span class="li-check">&#10003;</span>Same-day quotes and estimates sent</li>
+<li><span class="li-check">&#10003;</span>Invoice chasing and payment tracking</li>
+<li><span class="li-check">&#10003;</span>Complete customer communication management</li>
+</ul>
+</div>
+</section>
+
+<!-- SPLIT 2 DARK -->
+<section class="split-section split-dark reveal">
+<div class="split-text">
+<div class="section-eyebrow" style="color:var(--amber)">Our Specialism</div>
+<h2>Specialists in trades. Nobody else.</h2>
+<p>We don't work with restaurants, salons or tech startups. We work exclusively with tradesmen because that's what we know inside out.</p>
+<ul>
+<li><span class="li-check">&#10003;</span>Electricians, plumbers, builders, HVAC engineers</li>
+<li><span class="li-check">&#10003;</span>We speak your customers' language</li>
+<li><span class="li-check">&#10003;</span>Technical knowledge sets us apart</li>
+<li><span class="li-check">&#10003;</span>We understand compliance and certification</li>
+</ul>
+</div>
+<div class="split-img">
+<img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=800&h=600&fit=crop" alt="Tradesman at work">
+</div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+<div class="container">
+<div class="how-header reveal">
+<div class="section-eyebrow">Simple Process</div>
+<h2 class="section-title">How It Works</h2>
+<p class="section-sub" style="margin:0 auto">Getting started takes less than a week. Here's how we onboard every new client.</p>
+</div>
+<div class="how-steps reveal">
+<div class="how-step">
+<div class="how-num">1</div>
+<h3>Discovery Call</h3>
+<p>We learn about your business, your pain points, and exactly what support you need.</p>
+</div>
+<div class="how-step">
+<div class="how-num">2</div>
+<h3>Setup &amp; Systems</h3>
+<p>We set up your phone line, email, CRM and processes &mdash; tailored to your trade.</p>
+</div>
+<div class="how-step">
+<div class="how-num">3</div>
+<h3>Go Live</h3>
+<p>We start handling your admin. You get your evenings back and watch your business grow.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+<div class="container">
+<div class="services-header reveal">
+<div class="section-eyebrow">What We Do</div>
+<h2 class="section-title">Everything We Take Off Your Plate</h2>
+<p class="section-sub" style="margin:0 auto">From the phone ringing to the invoice being paid &mdash; we handle the full cycle.</p>
+</div>
+<div class="services-grid">
+<div class="service-card reveal"><div class="service-icon">&#128222;</div><h4>Call Answering</h4><p>Professional call handling in your business name</p></div>
+<div class="service-card reveal"><div class="service-icon">&#128231;</div><h4>Email Management</h4><p>Inbox zero &mdash; every email handled promptly</p></div>
+<div class="service-card reveal"><div class="service-icon">&#128196;</div><h4>Quoting &amp; Estimates</h4><p>Accurate quotes sent same-day to customers</p></div>
+<div class="service-card reveal"><div class="service-icon">&#128179;</div><h4>Invoicing &amp; Chasing</h4><p>Professional invoices and payment follow-ups</p></div>
+<div class="service-card reveal"><div class="service-icon">&#128230;</div><h4>Material Ordering</h4><p>Wholesale ordering at the best trade prices</p></div>
+<div class="service-card reveal"><div class="service-icon">&#128197;</div><h4>Job Scheduling</h4><p>Diary management and appointment booking</p></div>
+<div class="service-card reveal"><div class="service-icon">&#128172;</div><h4>Customer Comms</h4><p>WhatsApp, SMS, and phone updates to clients</p></div>
+<div class="service-card reveal"><div class="service-icon">&#128176;</div><h4>Payment Reconciliation</h4><p>Track payments, flag overdue, reconcile accounts</p></div>
+<div class="service-card reveal"><div class="service-icon">&#11088;</div><h4>Google My Business</h4><p>Review management and listing optimisation</p></div>
+<div class="service-card reveal"><div class="service-icon">&#128241;</div><h4>Social Media &amp; Web</h4><p>Content posting and website updates</p></div>
+<div class="service-card reveal"><div class="service-icon">&#9889;</div><h4>Anything Else</h4><p>If it's admin, we can handle it. Just ask.</p></div>
+</div>
+</div>
+</section>
+
+<!-- WHY TRADESMEN CHOOSE US -->
+<section class="tradesmen">
+<div class="container">
+<div class="tradesmen-inner reveal">
+<div>
+<div class="section-eyebrow">The Results</div>
+<h2 class="section-title">Why Tradesmen Choose Us</h2>
+<p class="section-sub" style="margin-bottom:30px">The numbers speak for themselves. Here's what our clients experience after partnering with Multicore.</p>
+<div class="tradesmen-checks">
+<div class="tradesmen-check"><div class="check-icon">&#10003;</div>16+ years of trade industry experience</div>
+<div class="tradesmen-check"><div class="check-icon">&#10003;</div>8-12 hours saved per week on average</div>
+<div class="tradesmen-check"><div class="check-icon">&#10003;</div>Professional business image guaranteed</div>
+<div class="tradesmen-check"><div class="check-icon">&#10003;</div>100% client retention rate</div>
+</div>
+</div>
+<div class="tradesmen-stats">
+<div class="tradesmen-stat"><div class="big">16+</div><div class="label">Years Experience</div></div>
+<div class="tradesmen-stat"><div class="big">8-12</div><div class="label">Hours Saved Weekly</div></div>
+<div class="tradesmen-stat"><div class="big">100%</div><div class="label">Client Retention</div></div>
+<div class="tradesmen-stat"><div class="big">5.0</div><div class="label">Average Rating</div></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- PHOTO GRID -->
+<section class="photo-grid-section">
+<div class="photo-mosaic reveal">
+<div class="pm-item"><img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&h=600&fit=crop" alt="Trade work"></div>
+<div class="pm-item"><img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop" alt="Construction"></div>
+<div class="pm-item"><img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&h=300&fit=crop" alt="Electrician"></div>
+<div class="pm-item"><img src="https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=400&h=300&fit=crop" alt="Plumbing"></div>
+<div class="pm-item"><img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=400&h=300&fit=crop" alt="Office"></div>
+</div>
+</section>
+
+<!-- PORTAL -->
+<section class="portal" id="portal">
+<div class="container">
+<div class="portal-inner reveal">
+<div class="portal-text">
+<div class="section-eyebrow" style="color:var(--amber)">Client Portal</div>
+<h2>Your Own Live Client Portal</h2>
+<p>Full visibility of your business admin in real time. See calls, quotes, invoices, and jobs &mdash; all from one dashboard. No more guessing what's happening behind the scenes.</p>
+<div class="portal-features">
+<div class="portal-feat">
+<div class="portal-feat-icon">
+<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+</div>
+<div><h4>Live Dashboard</h4><p>Real-time overview of all business activity</p></div>
+</div>
+<div class="portal-feat">
+<div class="portal-feat-icon">
+<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+</div>
+<div><h4>Full Transparency</h4><p>See every call, email, quote, and invoice logged</p></div>
+</div>
+<div class="portal-feat">
+<div class="portal-feat-icon">
+<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+</div>
+<div><h4>Real-Time Updates</h4><p>Instant notifications on new activity and changes</p></div>
+</div>
+</div>
+</div>
+<div class="portal-mock">
+<div class="portal-mock-header">
+<div class="portal-mock-dots"><span></span><span></span><span></span></div>
+<div class="portal-mock-title">ADMINCORE DASHBOARD</div>
+</div>
+<div class="portal-mock-stats">
+<div class="pm-stat"><div class="pm-val">47</div><div class="pm-lbl">Calls This Month</div></div>
+<div class="pm-stat"><div class="pm-val">23</div><div class="pm-lbl">Quotes Sent</div></div>
+<div class="pm-stat"><div class="pm-val">&pound;18.4k</div><div class="pm-lbl">Invoiced</div></div>
+</div>
+<div class="portal-mock-bars">
+<div class="pm-bar"><div class="pm-bar-label">Calls</div><div class="pm-bar-track"><div class="pm-bar-fill" data-width="85" style="width:0%;background:var(--blue)"></div></div></div>
+<div class="pm-bar"><div class="pm-bar-label">Quotes</div><div class="pm-bar-track"><div class="pm-bar-fill" data-width="65" style="width:0%;background:var(--amber)"></div></div></div>
+<div class="pm-bar"><div class="pm-bar-label">Invoices</div><div class="pm-bar-track"><div class="pm-bar-fill" data-width="92" style="width:0%;background:var(--green)"></div></div></div>
+<div class="pm-bar"><div class="pm-bar-label">Payments</div><div class="pm-bar-track"><div class="pm-bar-fill" data-width="78" style="width:0%;background:var(--blue)"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+<div class="container">
+<div class="pricing-header reveal">
+<div class="section-eyebrow">Pricing</div>
+<h2 class="section-title">Simple, Transparent Pricing</h2>
+<p class="section-sub" style="margin:0 auto">Choose the package that fits your business. All plans include your own dedicated admin manager.</p>
+</div>
+<div class="pricing-grid">
+<div class="pricing-card reveal reveal-d1">
+<div class="pricing-name">Starter</div>
+<div class="pricing-price">Custom Pricing</div>
+<ul class="pricing-features">
+<li>Call answering &amp; messages</li>
+<li>Email management</li>
+<li>Basic quoting support</li>
+<li>Job scheduling</li>
+<li>Weekly activity report</li>
+</ul>
+<button class="btn btn-outline" style="border-color:var(--blue);color:var(--blue)" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started</button>
+</div>
+<div class="pricing-card featured reveal reveal-d2">
+<div class="pricing-badge">MOST POPULAR</div>
+<div class="pricing-name">Growth</div>
+<div class="pricing-price">Custom Pricing</div>
+<ul class="pricing-features">
+<li>Everything in Starter</li>
+<li>Full invoicing &amp; chasing</li>
+<li>Material ordering</li>
+<li>Customer communication</li>
+<li>CRM management</li>
+<li>Payment reconciliation</li>
+<li>Client portal access</li>
+</ul>
+<button class="btn btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started</button>
+</div>
+<div class="pricing-card reveal reveal-d3">
+<div class="pricing-name">Enterprise</div>
+<div class="pricing-price">Custom Pricing</div>
+<ul class="pricing-features">
+<li>Everything in Growth</li>
+<li>Google My Business management</li>
+<li>Social media &amp; web updates</li>
+<li>Multi-engineer scheduling</li>
+<li>Custom reporting</li>
+<li>Priority support</li>
+</ul>
+<button class="btn btn-outline" style="border-color:var(--blue);color:var(--blue)" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started</button>
+</div>
+</div>
+<p class="reveal" style="text-align:center;color:var(--gray);margin-top:28px;font-size:.9rem">Need something bespoke? We build custom packages to fit your exact requirements. <a href="#contact" style="color:var(--blue);font-weight:600">Get in touch</a> to discuss.</p>
+</div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+<div class="container">
+<div class="testimonials-header reveal">
+<div class="section-eyebrow">Reviews</div>
+<h2 class="section-title">What Our Clients Say</h2>
+</div>
+<div class="testimonials-grid">
+<div class="testimonial-card reveal reveal-d1">
+<div class="testimonial-stars"><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span></div>
+<p class="testimonial-text">"I have been working with Michael at Multicore for a couple of years now and I can honestly say he has changed both my business and my work-life balance for the better. What sets Michael apart is his genuine knowledge of electrics and construction. It means I can completely trust him to handle building quotes and answer technical questions for customers &mdash; something that is rare to find in admin support. He is proactive, constantly finding ways to drive the business forward that I wouldn't have had the time or headspace to think of myself. My customers frequently compliment me on how professional and approachable Michael is when he answers the phone. Multicore has added immense value to my operations and I couldn't imagine running my business without them now."</p>
+<div class="testimonial-author">
+<div class="testimonial-avatar">DB</div>
+<div>
+<div class="testimonial-name">Derek Beckley</div>
+<div class="testimonial-role">Derek Beckley Electrical</div>
+</div>
+</div>
+</div>
+<div class="testimonial-card reveal reveal-d2">
+<div class="testimonial-stars"><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span></div>
+<p class="testimonial-text">"I've been working alongside Mike for nearly 5 years and he's not just a member of the team... he is the team! Since bringing MultiCore Management on board, my working hours are shorter, customer wait times have reduced and the whole business runs smoother. I can honestly say my business would not be where it is today without the support of MultiCore Management."</p>
+<div class="testimonial-author">
+<div class="testimonial-avatar">JS</div>
+<div>
+<div class="testimonial-name">Joe Sanchez</div>
+<div class="testimonial-role">Sanchez Electrical</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+<div class="container">
+<div class="contact-inner reveal">
+<div class="contact-info">
+<div class="section-eyebrow">Get In Touch</div>
+<h2>Let's Talk About Your Business</h2>
+<p>Book a free, no-obligation discovery call and find out how much time we can save you every single week.</p>
+<div class="contact-details">
+<div class="contact-detail">
+<div class="contact-detail-icon">
+<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+</div>
+info@multicoremanagement.co.uk
+</div>
+<div class="contact-detail">
+<div class="contact-detail-icon">
+<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+</div>
+United Kingdom
+</div>
+<div class="contact-detail">
+<div class="contact-detail-icon">
+<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+</div>
+Mon &ndash; Fri: 8am &ndash; 6pm
+</div>
+</div>
+</div>
+<form class="contact-form" onsubmit="event.preventDefault();this.querySelector('button').textContent='Message Sent!';this.querySelector('button').style.background='var(--green)';setTimeout(()=>{this.reset();this.querySelector('button').textContent='Send Message';this.querySelector('button').style.background=''},2500)">
+<div class="form-row">
+<div class="form-group"><label>Name</label><input type="text" placeholder="Your full name" required></div>
+<div class="form-group"><label>Email</label><input type="email" placeholder="you@company.co.uk" required></div>
+</div>
+<div class="form-row">
+<div class="form-group"><label>Phone</label><input type="tel" placeholder="07xxx xxx xxx"></div>
+<div class="form-group"><label>Business Name</label><input type="text" placeholder="Your business name"></div>
+</div>
+<div class="form-group"><label>Message</label><textarea placeholder="Tell us about your business and what support you need..."></textarea></div>
+<button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Send Message</button>
+</form>
+</div>
+</div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner">
+<div class="container">
+<h2 class="reveal">Ready to stop doing everything yourself?</h2>
+<p class="reveal">Join the tradesmen who've taken back their evenings and grown their businesses.</p>
+<button class="btn btn-primary reveal" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Book Your Free Discovery Call</button>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+<div class="footer-grid">
+<div class="footer-brand">
+<a href="#" class="nav-logo">MULTICORE<span>MANAGEMENT</span></a>
+<p>Back-office admin support built exclusively for UK tradesmen. We handle the admin so you can focus on the tools.</p>
+<div class="footer-socials">
+<div class="footer-social">
+<svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557a9.83 9.83 0 0 1-2.828.775 4.932 4.932 0 0 0 2.165-2.724 9.864 9.864 0 0 1-3.127 1.195A4.916 4.916 0 0 0 16.616 2c-2.72 0-4.924 2.204-4.924 4.924 0 .386.044.762.128 1.124C7.728 7.85 4.1 5.884 1.67 2.905a4.903 4.903 0 0 0-.666 2.475 4.92 4.92 0 0 0 2.19 4.1A4.903 4.903 0 0 1 .96 8.855v.063a4.926 4.926 0 0 0 3.95 4.827 4.996 4.996 0 0 1-2.224.085 4.93 4.93 0 0 0 4.6 3.42A9.868 9.868 0 0 1 0 19.54a13.94 13.94 0 0 0 7.548 2.212c9.057 0 14.01-7.503 14.01-14.01 0-.213-.005-.425-.014-.636A10.012 10.012 0 0 0 24 4.557z"/></svg>
+</div>
+<div class="footer-social">
+<svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+</div>
+<div class="footer-social">
+<svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+</div>
+<div class="footer-social">
+<svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+</div>
+</div>
+</div>
+<div class="footer-col">
+<h4>Quick Links</h4>
+<ul>
+<li><a href="#about">About Us</a></li>
+<li><a href="#services">Services</a></li>
+<li><a href="#how">How It Works</a></li>
+<li><a href="#pricing">Pricing</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h4>Services</h4>
+<ul>
+<li><a href="#services">Call Answering</a></li>
+<li><a href="#services">Quoting &amp; Estimates</a></li>
+<li><a href="#services">Invoicing</a></li>
+<li><a href="#services">Job Scheduling</a></li>
+<li><a href="#services">Material Ordering</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h4>Trades We Serve</h4>
+<ul>
+<li><a href="#">Electricians</a></li>
+<li><a href="#">Plumbers</a></li>
+<li><a href="#">Builders</a></li>
+<li><a href="#">HVAC Engineers</a></li>
+<li><a href="#">All Trades</a></li>
+</ul>
+</div>
+</div>
+<div class="footer-bottom">
+&copy; 2026 Multicore Management. All rights reserved. Back-office support exclusively for UK tradesmen.
+</div>
+</footer>
+
+<script>
+// ========== NAV SCROLL ==========
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ========== REVEAL ON SCROLL ==========
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ========== PORTAL BAR ANIMATION ==========
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.pm-bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.width + '%';
+      });
+      barObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+const portalMock = document.querySelector('.portal-mock');
+if (portalMock) barObserver.observe(portalMock);
+
+// ========== SMOOTH SCROLL ==========
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+
+// ========== HERO CANVAS — FLOATING DASHBOARD FIELD ==========
+(function(){
+var c=document.getElementById('heroCanvas');
+var ctx=c.getContext('2d');
+var W=0,H=0,t=0,mx=0.5,my=0.5,smx=0.5,smy=0.5;
+
+function sz(){
+  W=c.width=c.parentElement.clientWidth||window.innerWidth;
+  H=c.height=c.parentElement.clientHeight||window.innerHeight;
+}
+sz();
+window.addEventListener('resize',sz);
+setTimeout(sz,100);
+setTimeout(sz,500);
+
+window.addEventListener('mousemove',function(e){
+  mx=e.clientX/window.innerWidth;
+  my=e.clientY/window.innerHeight;
+});
+
+// Particles
+var pts=[];
+for(var i=0;i<90;i++) pts.push({x:Math.random(),y:Math.random(),vx:(Math.random()-0.5)*0.0003,vy:(Math.random()-0.5)*0.0003,r:0.6+Math.random()*1.6,o:0.04+Math.random()*0.14});
+
+// Dust
+var dst=[];
+for(var i=0;i<50;i++) dst.push({x:Math.random(),y:Math.random(),vy:-0.0001-Math.random()*0.0002,vx:(Math.random()-0.5)*0.0001,r:0.3+Math.random()*1,o:0.03+Math.random()*0.1,l:Math.random()});
+
+// Panel definitions
+var defs=[
+  {t:['INVOICE #1247','Derek Beckley Electrical','Consumer unit replacement','Total: £2,450.00','Status: SENT'],ac:'#3871c1',g:'56,113,193'},
+  {t:['QUOTE #892','Full rewire — 3 bed semi','Labour: £3,200','Materials: £1,100','Valid: 30 days'],ac:'#3871c1',g:'56,113,193'},
+  {t:['INCOMING CALL','Mrs. Thompson','07912 xxx xxx','Re: Kitchen refit','Duration: 04:32'],ac:'#f68712',g:'246,135,18'},
+  {t:['NEW EMAIL','From: james@build.co','Subject: Quote request','3 bed rewire needed','Postcode: SW11 2AD'],ac:'#3871c1',g:'56,113,193'},
+  {t:['EMAIL REPLY','To: sarah.williams@','Re: Boiler installation','Quote attached','Sent 14:22'],ac:'#3871c1',g:'56,113,193'},
+  {t:['CALENDAR','Mon 24th March','09:00 — Rewire start','13:00 — Quote visit','16:00 — Final fix'],ac:'#3871c1',g:'56,113,193'},
+  {t:['JOB BOOKED','Bathroom refit','Client: Mr. Patel','Start: 28th March','Value: £4,800'],ac:'#40b93c',g:'64,185,60'},
+  {t:['SCHEDULE','This Week: 5 jobs','2 quotes pending','1 callback needed','Capacity: 85%'],ac:'#3871c1',g:'56,113,193'},
+  {t:['ORDER PLACED','CEF Wholesale','6mm T&E 50m x3','Consumer unit 16-way','Delivery: Tomorrow'],ac:'#3871c1',g:'56,113,193'},
+  {t:['PAYMENT RECEIVED','£2,450.00','From: D. Beckley','Invoice #1247','Bank transfer'],ac:'#40b93c',g:'64,185,60'},
+  {t:['WHATSAPP','To: Mr. Harrison','Confirming Thursday','appointment at 9am','See you then!'],ac:'#40b93c',g:'64,185,60'},
+  {t:['SMS SENT','To: 07734 xxx xxx','Your electrician will','arrive 9-10am','tomorrow morning.'],ac:'#f68712',g:'246,135,18'},
+  {t:['REMINDER','Chase invoice #1198','Client: P. Williams','£1,890 overdue','Follow up @ 2pm'],ac:'#f68712',g:'246,135,18'},
+  {t:['FOLLOW UP','Quote #856 pending','Mrs. Chen — EV charger','Sent 5 days ago','Action: Call today'],ac:'#f68712',g:'246,135,18'},
+  {t:['RESOLVED','Enquiry handled','Called customer back','Outcome: Rebooked','Rating: 5 stars'],ac:'#40b93c',g:'64,185,60'},
+  {t:['MISSED CALL','07891 xxx xxx','Unknown number','Voicemail left','Action: Return call'],ac:'#f68712',g:'246,135,18'},
+  {t:['RECEIPT','Payment confirmed','Mr. Collins — £890','Method: Card','Ref: MC-2026-0341'],ac:'#40b93c',g:'64,185,60'},
+  {t:['TASK','Update Google listing','Add new photos','Reply to 2 reviews','Due: Friday'],ac:'#3871c1',g:'56,113,193'}
+];
+
+// Build panels scattered across viewport
+var panels=[];
+for(var i=0;i<defs.length;i++){
+  var layer=i%3; // 0=far,1=mid,2=near
+  var sc=[0.55,0.78,1.0][layer];
+  panels.push({
+    t:defs[i].t, ac:defs[i].ac, g:defs[i].g,
+    layer:layer, sc:sc,
+    w:(140+Math.random()*30)*sc,
+    h:(100+Math.random()*20)*sc,
+    bx:0.06+Math.random()*0.88,
+    by:0.06+Math.random()*0.88,
+    fax:0.008+Math.random()*0.018,
+    fay:0.006+Math.random()*0.014,
+    fsx:0.12+Math.random()*0.2,
+    fsy:0.1+Math.random()*0.18,
+    fpx:Math.random()*6.28,
+    fpy:Math.random()*6.28,
+    par:[0.04,0.025,0.012][layer],
+    tilt:(Math.random()-0.5)*0.08,
+    ts:(Math.random()-0.5)*0.15,
+    pp:Math.random()*6.28,
+    ba:[0.32,0.58,0.85][layer]
+  });
+}
+
+function animate(){
+  t+=0.007;
+  if(W===0||H===0){sz();}
+  ctx.clearRect(0,0,W,H);
+
+  // Background
+  var bg=ctx.createLinearGradient(0,0,W*0.4,H);
+  bg.addColorStop(0,'#091a2e');bg.addColorStop(0.35,'#071422');bg.addColorStop(0.7,'#060e1c');bg.addColorStop(1,'#040a14');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+  // Glow spots
+  var spots=[[0.2,0.3,0.07,'56,113,193'],[0.75,0.5,0.05,'56,113,193'],[0.5,0.8,0.035,'246,135,18']];
+  for(var s=0;s<spots.length;s++){
+    var sp=spots[s],br=Math.max(W,H)*0.45;
+    var rg=ctx.createRadialGradient(W*sp[0],H*sp[1],0,W*sp[0],H*sp[1],br);
+    var inten=sp[2]+Math.sin(t*0.4+sp[0]*10)*0.015;
+    rg.addColorStop(0,'rgba('+sp[3]+','+inten+')');
+    rg.addColorStop(0.5,'rgba('+sp[3]+','+(inten*0.3)+')');
+    rg.addColorStop(1,'rgba('+sp[3]+',0)');
+    ctx.fillStyle=rg;ctx.fillRect(0,0,W,H);
+  }
+
+  // Light shafts
+  ctx.save();ctx.globalCompositeOperation='screen';
+  var sway=Math.sin(t*0.12)*0.03;
+  var shafts=[{a:0.32,w:0.055,n:0.035},{a:0.52,w:0.04,n:0.025},{a:0.72,w:0.048,n:0.02},{a:0.92,w:0.032,n:0.015}];
+  for(var si=0;si<shafts.length;si++){
+    var sh=shafts[si],fl=0.7+Math.sin(t*0.35+si*1.3)*0.3;
+    var sx2=W*0.06,sy2=-H*0.04,ang=sh.a+sway,len=H*2.6;
+    var ex=sx2+Math.cos(ang)*len,ey=sy2+Math.sin(ang)*len;
+    var hw=Math.tan(sh.w*0.5)*len,perp=ang+1.5708;
+    var sg=ctx.createLinearGradient(sx2,sy2,ex,ey);
+    var sa=sh.n*fl;
+    sg.addColorStop(0,'rgba(160,200,255,'+(sa*1.8)+')');
+    sg.addColorStop(0.12,'rgba(56,113,193,'+sa+')');
+    sg.addColorStop(0.5,'rgba(56,113,193,'+(sa*0.15)+')');
+    sg.addColorStop(1,'rgba(56,113,193,0)');
+    ctx.fillStyle=sg;ctx.beginPath();
+    ctx.moveTo(sx2,sy2);
+    ctx.lineTo(ex+Math.cos(perp)*hw,ey+Math.sin(perp)*hw);
+    ctx.lineTo(ex-Math.cos(perp)*hw,ey-Math.sin(perp)*hw);
+    ctx.closePath();ctx.fill();
+  }
+  ctx.restore();
+
+  // Particles
+  for(var i=0;i<pts.length;i++){
+    var p=pts[i];
+    p.x+=p.vx+Math.sin(t*0.18+i*0.7)*0.00002;
+    p.y+=p.vy+Math.cos(t*0.14+i*0.5)*0.00002;
+    if(p.x<-0.02)p.x=1.02;if(p.x>1.02)p.x=-0.02;
+    if(p.y<-0.02)p.y=1.02;if(p.y>1.02)p.y=-0.02;
+    var px2=p.x*W,py2=p.y*H;
+    ctx.beginPath();ctx.arc(px2,py2,p.r,0,6.28);
+    ctx.fillStyle='rgba(100,160,220,'+p.o+')';ctx.fill();
+    for(var j=i+1;j<pts.length;j++){
+      var q=pts[j],dx=px2-q.x*W,dy=py2-q.y*H,d2=dx*dx+dy*dy;
+      if(d2<18000){
+        var d=Math.sqrt(d2);
+        ctx.beginPath();ctx.moveTo(px2,py2);ctx.lineTo(q.x*W,q.y*H);
+        ctx.strokeStyle='rgba(56,113,193,'+(0.05*(1-d/134))+')';
+        ctx.lineWidth=0.4;ctx.stroke();
+      }
+    }
+  }
+
+  // Dust
+  for(var i=0;i<dst.length;i++){
+    var d=dst[i];
+    d.x+=d.vx+Math.sin(t*0.25+d.l*8)*0.00003;
+    d.y+=d.vy;d.l-=0.0003;
+    if(d.l<=0||d.y<-0.03){d.x=Math.random();d.y=1.03;d.l=0.5+Math.random()*0.5;}
+    ctx.beginPath();ctx.arc(d.x*W,d.y*H,d.r,0,6.28);
+    ctx.fillStyle='rgba(180,210,255,'+(d.o*Math.min(d.l*3.5,1))+')';ctx.fill();
+  }
+
+  // Smooth mouse
+  smx+=(mx-smx)*0.04;
+  smy+=(my-smy)*0.04;
+  var mox=smx-0.5,moy=smy-0.5;
+
+  // Sort panels by layer
+  var sorted=panels.slice().sort(function(a,b){return a.layer-b.layer;});
+
+  // Draw panels
+  for(var i=0;i<sorted.length;i++){
+    var p=sorted[i];
+    var fx=Math.sin(t*p.fsx+p.fpx)*p.fax;
+    var fy=Math.cos(t*p.fsy+p.fpy)*p.fay;
+    var ppx=mox*p.par,ppy=moy*p.par;
+    var x=(p.bx+fx+ppx)*W,y=(p.by+fy+ppy)*H;
+    var rot=p.tilt+Math.sin(t*p.ts+p.fpx)*0.03;
+    var pAlpha=0.85+Math.sin(t*0.8+p.pp)*0.15;
+    var alpha=p.ba*pAlpha;
+    var pw=p.w,ph=p.h;
+
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.rotate(rot);
+    ctx.globalAlpha=alpha;
+
+    // Glow
+    var gr=Math.max(pw,ph)*0.7;
+    var og=ctx.createRadialGradient(0,0,0,0,0,gr);
+    og.addColorStop(0,'rgba('+p.g+',0.1)');og.addColorStop(1,'rgba('+p.g+',0)');
+    ctx.fillStyle=og;ctx.fillRect(-gr,-gr,gr*2,gr*2);
+
+    // Glass body
+    ctx.beginPath();
+    ctx.moveTo(-pw/2+10,  -ph/2);
+    ctx.lineTo(pw/2-10,   -ph/2);
+    ctx.quadraticCurveTo(pw/2,-ph/2, pw/2,-ph/2+10);
+    ctx.lineTo(pw/2,       ph/2-10);
+    ctx.quadraticCurveTo(pw/2,ph/2,  pw/2-10,ph/2);
+    ctx.lineTo(-pw/2+10,   ph/2);
+    ctx.quadraticCurveTo(-pw/2,ph/2, -pw/2,ph/2-10);
+    ctx.lineTo(-pw/2,      -ph/2+10);
+    ctx.quadraticCurveTo(-pw/2,-ph/2,-pw/2+10,-ph/2);
+    ctx.closePath();
+
+    var gbg=ctx.createLinearGradient(0,-ph/2,0,ph/2);
+    gbg.addColorStop(0,'rgba('+p.g+',0.14)');
+    gbg.addColorStop(0.5,'rgba('+p.g+',0.07)');
+    gbg.addColorStop(1,'rgba('+p.g+',0.03)');
+    ctx.fillStyle=gbg;ctx.fill();
+    ctx.strokeStyle='rgba('+p.g+',0.3)';ctx.lineWidth=1;ctx.stroke();
+
+    // Top highlight
+    ctx.globalAlpha=alpha*0.5;
+    ctx.fillStyle='rgba(255,255,255,0.15)';
+    ctx.fillRect(-pw/2+10,-ph/2,pw-20,1.5);
+
+    // Pulsing status dot
+    var dp=0.4+Math.sin(t*2.5+p.pp)*0.4;
+    ctx.globalAlpha=alpha*dp;
+    ctx.fillStyle=p.ac;
+    ctx.beginPath();ctx.arc(pw/2-10*p.sc,-ph/2+10*p.sc,3.5*p.sc,0,6.28);ctx.fill();
+    ctx.globalAlpha=alpha*dp*0.3;
+    ctx.beginPath();ctx.arc(pw/2-10*p.sc,-ph/2+10*p.sc,8*p.sc,0,6.28);ctx.fill();
+
+    // Header bar
+    ctx.globalAlpha=alpha*0.8;
+    ctx.fillStyle='rgba('+p.g+',0.12)';
+    ctx.fillRect(-pw/2+8*p.sc,-ph/2+6*p.sc,pw-28*p.sc,15*p.sc);
+
+    // Title
+    var fs=Math.max(7,10*p.sc);
+    ctx.font='bold '+fs+'px Inter,sans-serif';
+    ctx.fillStyle=p.ac;
+    ctx.textAlign='left';
+    var tx=-pw/2+13*p.sc,ty=-ph/2+18*p.sc;
+    ctx.fillText(p.t[0],tx,ty);
+
+    // Body
+    ctx.font=Math.max(6,8*p.sc)+'px Inter,sans-serif';
+    ctx.fillStyle='rgba(255,255,255,'+(0.45*alpha)+')';
+    for(var j=1;j<p.t.length;j++){ty+=13*p.sc;ctx.fillText(p.t[j],tx,ty);}
+
+    // Bottom bar
+    ctx.globalAlpha=alpha*0.45;
+    var barY=ph/2-10*p.sc,barW=pw-16*p.sc;
+    ctx.fillStyle='rgba('+p.g+',0.1)';
+    ctx.fillRect(-pw/2+8*p.sc,barY,barW,4*p.sc);
+    var fillW=barW*(0.4+Math.sin(t*0.6+p.pp)*0.25+0.15);
+    ctx.fillStyle='rgba('+p.g+',0.35)';
+    ctx.fillRect(-pw/2+8*p.sc,barY,fillW,4*p.sc);
+
+    ctx.restore();
+  }
+
+  // Vignette
+  var v=ctx.createRadialGradient(W*0.28,H*0.46,H*0.15,W*0.28,H*0.46,H*1.15);
+  v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(0.35,'rgba(0,0,0,0)');
+  v.addColorStop(0.65,'rgba(0,0,0,0.2)');v.addColorStop(1,'rgba(0,0,0,0.6)');
+  ctx.fillStyle=v;ctx.fillRect(0,0,W,H);
+
+  // Darken left for text readability
+  var tg=ctx.createLinearGradient(0,0,W*0.5,0);
+  tg.addColorStop(0,'rgba(6,16,30,0.45)');tg.addColorStop(0.6,'rgba(6,16,30,0.2)');tg.addColorStop(1,'rgba(6,16,30,0)');
+  ctx.fillStyle=tg;ctx.fillRect(0,H*0.15,W*0.55,H*0.7);
+
+  // Top/bottom fade
+  var tf=ctx.createLinearGradient(0,0,0,H*0.13);
+  tf.addColorStop(0,'rgba(5,14,27,0.55)');tf.addColorStop(1,'rgba(5,14,27,0)');
+  ctx.fillStyle=tf;ctx.fillRect(0,0,W,H*0.13);
+  var bf=ctx.createLinearGradient(0,H*0.86,0,H);
+  bf.addColorStop(0,'rgba(4,10,18,0)');bf.addColorStop(1,'rgba(4,10,18,0.55)');
+  ctx.fillStyle=bf;ctx.fillRect(0,H*0.86,W,H*0.14);
+
+  requestAnimationFrame(animate);
+}
+animate();
+})();
+</script>
+</body>
+</html>

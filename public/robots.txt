@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://multicoremanagement.co.uk/sitemap.xml
