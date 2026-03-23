@@ -28,6 +28,9 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"LocalBusiness","name":"Multicore Management","description":"Back-office admin support for UK tradespeople. Call answering, quoting, invoicing, scheduling and more.","url":"https://www.multicoremanagement.co.uk","telephone":"+442080495144","email":"michael@multicoremanagement.co.uk","image":"https://www.multicoremanagement.co.uk/multicore-symbol.png","address":{"@type":"PostalAddress","addressCountry":"GB"},"areaServed":{"@type":"Country","name":"United Kingdom"},"serviceType":["Call Answering","Quoting","Invoicing","Scheduling","Email Management"],"priceRange":"££","openingHours":"Mo-Fr 08:00-18:00","aggregateRating":{"@type":"AggregateRating","ratingValue":"5.0","reviewCount":"2"},"sameAs":["https://www.admincore.co.uk","https://www.instagram.com/multicoremanagement/","https://www.facebook.com/people/Multicore-Management/61582738935554/"]}
 </script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do you work with sole traders or just bigger companies?","acceptedAnswer":{"@type":"Answer","text":"We work with tradespeople of all sizes — from sole traders to small teams. Most of our clients are one or two-person operations who need reliable back-office support without the cost of hiring someone full-time."}},{"@type":"Question","name":"What trades do you work with?","acceptedAnswer":{"@type":"Answer","text":"We support all trades — electricians, plumbers, gas engineers, builders, roofers, landscapers, and more. If you're a tradesperson drowning in admin, we can help."}},{"@type":"Question","name":"Do you answer calls on my behalf?","acceptedAnswer":{"@type":"Answer","text":"Yes. We answer your calls professionally in your business name, take messages, book appointments, and make sure you never miss a lead while you're on the tools."}},{"@type":"Question","name":"How does the quoting and invoicing work?","acceptedAnswer":{"@type":"Answer","text":"You send us the job details and we prepare professional quotes and invoices on your behalf. We chase up outstanding payments too, so you get paid faster without the awkward conversations."}},{"@type":"Question","name":"Do I need to be locked into a long contract?","acceptedAnswer":{"@type":"Answer","text":"No. We keep things flexible because that's how tradespeople work. Get in touch and we'll find an arrangement that suits you."}},{"@type":"Question","name":"Are you based in the UK?","acceptedAnswer":{"@type":"Answer","text":"Yes, we're a UK-based business supporting tradespeople across the country. We work remotely so it doesn't matter where you're based."}},{"@type":"Question","name":"What's the difference between Multicore and hiring a VA?","acceptedAnswer":{"@type":"Answer","text":"We specialise in the trades. We understand the language, the job types, and what your customers expect. A general VA won't know the difference between a first fix and a second fix — we do."}},{"@type":"Question","name":"Can you manage my emails and diary?","acceptedAnswer":{"@type":"Answer","text":"Absolutely. We manage your inbox, filter out the noise, respond to enquiries, and keep your schedule organised so you always know where you need to be."}},{"@type":"Question","name":"Do you work evenings and weekends?","acceptedAnswer":{"@type":"Answer","text":"Our standard hours are Monday to Friday, 8am to 6pm. If you need cover outside those hours, get in touch and we can discuss what works for you."}},{"@type":"Question","name":"How do I get started?","acceptedAnswer":{"@type":"Answer","text":"Just give us a call on 020 8049 5144 or fill in the contact form on our website. We'll have a chat about what you need and show you how we can help."}}]}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -486,6 +489,19 @@ animation:scanDown 6s ease-in-out infinite;opacity:0.5}
 
 /* TESTIMONIALS */
 .testimonials{padding:var(--section-pad);background:var(--white)}
+
+/* FAQ */
+.faq{padding:var(--section-pad);background:var(--light)}
+.faq-header{text-align:center;margin-bottom:60px}
+.faq-list{max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.faq-item{background:var(--white);border-radius:var(--card-radius);border:1px solid rgba(0,0,0,.06);overflow:hidden;transition:box-shadow .3s}
+.faq-item:hover{box-shadow:0 4px 20px rgba(0,0,0,.06)}
+.faq-question{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;cursor:pointer;font-family:'Montserrat',sans-serif;font-weight:600;font-size:.95rem;color:#1a2332;gap:16px;user-select:none}
+.faq-question:hover{color:var(--blue)}
+.faq-icon{width:24px;height:24px;flex-shrink:0;transition:transform .3s ease;color:var(--blue)}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s ease}
+.faq-answer-inner{padding:0 24px 20px;color:var(--gray);line-height:1.7;font-size:.95rem}
 .testimonials-header{text-align:center;margin-bottom:60px}
 .testimonials-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:1100px;margin:0 auto}
 .testimonial-card{background:var(--light);border-radius:var(--card-radius);padding:40px;border:1px solid rgba(0,0,0,.04);transition:all .4s}
@@ -554,7 +570,7 @@ animation:scanDown 6s ease-in-out infinite;opacity:0.5}
 .hero-grid{display:none}
 .hero-sweep{display:none}
 .hero-scanline{display:none}
-.hero-globe{width:400px;height:400px}
+.hero-globe{width:400px;height:400px;top:45%}
 .hero-globe-img{width:320px;height:320px;animation:globeRevealMob 1.5s cubic-bezier(0.16,1,0.3,1) 0.3s forwards!important}
 .orbit-ring{display:none}
 .fp{width:170px;padding:11px 13px}
@@ -600,7 +616,7 @@ animation:scanDown 6s ease-in-out infinite;opacity:0.5}
 .tradesmen-stats{grid-template-columns:1fr}
 .trade-img-wrap{height:200px}
 .hero{min-height:100svh}
-.hero-globe{width:340px;height:340px}
+.hero-globe{width:340px;height:340px;top:45%}
 .hero-globe-img{width:280px;height:280px}
 .hero-content{padding:80px 16px 40px}
 .hero-content h1{font-size:1.5rem}
@@ -1102,6 +1118,69 @@ Trusted by tradespeople across the UK
 </div>
 </section>
 
+<!-- FAQ -->
+<section class="faq" id="faq">
+<div class="container">
+<div class="faq-header reveal">
+<div class="section-eyebrow">FAQ</div>
+<h2 class="section-title">Common Questions</h2>
+</div>
+<div class="faq-list">
+
+<div class="faq-item reveal reveal-d1">
+<div class="faq-question" onclick="toggleFaq(this)">Do you work with sole traders or just bigger companies?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-answer"><div class="faq-answer-inner">We work with tradespeople of all sizes — from sole traders to small teams. Most of our clients are one or two-person operations who need reliable back-office support without the cost of hiring someone full-time.</div></div>
+</div>
+
+<div class="faq-item reveal reveal-d2">
+<div class="faq-question" onclick="toggleFaq(this)">What trades do you work with?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-answer"><div class="faq-answer-inner">We support all trades — electricians, plumbers, gas engineers, builders, roofers, landscapers, and more. If you're a tradesperson drowning in admin, we can help.</div></div>
+</div>
+
+<div class="faq-item reveal reveal-d3">
+<div class="faq-question" onclick="toggleFaq(this)">Do you answer calls on my behalf?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-answer"><div class="faq-answer-inner">Yes. We answer your calls professionally in your business name, take messages, book appointments, and make sure you never miss a lead while you're on the tools.</div></div>
+</div>
+
+<div class="faq-item reveal reveal-d4">
+<div class="faq-question" onclick="toggleFaq(this)">How does the quoting and invoicing work?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-answer"><div class="faq-answer-inner">You send us the job details and we prepare professional quotes and invoices on your behalf. We chase up outstanding payments too, so you get paid faster without the awkward conversations.</div></div>
+</div>
+
+<div class="faq-item reveal">
+<div class="faq-question" onclick="toggleFaq(this)">Do I need to be locked into a long contract?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-answer"><div class="faq-answer-inner">No. We keep things flexible because that's how tradespeople work. Get in touch and we'll find an arrangement that suits you.</div></div>
+</div>
+
+<div class="faq-item reveal">
+<div class="faq-question" onclick="toggleFaq(this)">Are you based in the UK?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-answer"><div class="faq-answer-inner">Yes, we're a UK-based business supporting tradespeople across the country. We work remotely so it doesn't matter where you're based.</div></div>
+</div>
+
+<div class="faq-item reveal">
+<div class="faq-question" onclick="toggleFaq(this)">What's the difference between Multicore and hiring a VA?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-answer"><div class="faq-answer-inner">We specialise in the trades. We understand the language, the job types, and what your customers expect. A general VA won't know the difference between a first fix and a second fix — we do.</div></div>
+</div>
+
+<div class="faq-item reveal">
+<div class="faq-question" onclick="toggleFaq(this)">Can you manage my emails and diary?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-answer"><div class="faq-answer-inner">Absolutely. We manage your inbox, filter out the noise, respond to enquiries, and keep your schedule organised so you always know where you need to be.</div></div>
+</div>
+
+<div class="faq-item reveal">
+<div class="faq-question" onclick="toggleFaq(this)">Do you work evenings and weekends?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-answer"><div class="faq-answer-inner">Our standard hours are Monday to Friday, 8am to 6pm. If you need cover outside those hours, get in touch and we can discuss what works for you.</div></div>
+</div>
+
+<div class="faq-item reveal">
+<div class="faq-question" onclick="toggleFaq(this)">How do I get started?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-answer"><div class="faq-answer-inner">Just give us a call on 020 8049 5144 or fill in the contact form below. We'll have a chat about what you need and show you how we can help.</div></div>
+</div>
+
+</div>
+</div>
+</section>
+
 <!-- CONTACT -->
 <section class="contact" id="contact">
 <div class="container">
@@ -1217,6 +1296,9 @@ Mon &ndash; Fri: 8am &ndash; 6pm
 </footer>
 
 <script>
+// ========== FAQ ACCORDION ==========
+function toggleFaq(el){var item=el.parentElement;var answer=item.querySelector('.faq-answer');if(item.classList.contains('open')){answer.style.maxHeight=null;item.classList.remove('open')}else{document.querySelectorAll('.faq-item.open').forEach(function(o){o.classList.remove('open');o.querySelector('.faq-answer').style.maxHeight=null});item.classList.add('open');answer.style.maxHeight=answer.scrollHeight+'px'}}
+
 // ========== PRELOADER ==========
 window.addEventListener('load',function(){
   setTimeout(function(){document.getElementById('preloader').classList.add('loaded');},1400);
