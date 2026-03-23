@@ -299,6 +299,30 @@ animation:scanDown 6s ease-in-out infinite;opacity:0.5}
   100%{transform:translate(12vw,36vh) scale(1) rotate(-0.4deg);opacity:0.85;filter:blur(0px)}
 }
 
+/* flowBehind — slower, deeper orbit behind the globe */
+@keyframes flowBehind1{
+  0%{transform:translate(-38vw,-25vh) scale(0.6) rotate(0.3deg);opacity:0.2;filter:blur(2px)}
+  12%{transform:translate(-20vw,-10vh) scale(0.55) rotate(-0.2deg);opacity:0.15;filter:blur(2.5px)}
+  25%{transform:translate(5vw,5vh) scale(0.5) rotate(0.4deg);opacity:0.1;filter:blur(3px)}
+  37%{transform:translate(25vw,-8vh) scale(0.55) rotate(-0.3deg);opacity:0.15;filter:blur(2.5px)}
+  50%{transform:translate(38vw,20vh) scale(0.6) rotate(0.2deg);opacity:0.2;filter:blur(2px)}
+  62%{transform:translate(20vw,12vh) scale(0.55) rotate(-0.4deg);opacity:0.15;filter:blur(2.5px)}
+  75%{transform:translate(-5vw,-5vh) scale(0.5) rotate(0.3deg);opacity:0.1;filter:blur(3px)}
+  87%{transform:translate(-25vw,10vh) scale(0.55) rotate(-0.2deg);opacity:0.15;filter:blur(2.5px)}
+  100%{transform:translate(-38vw,-25vh) scale(0.6) rotate(0.3deg);opacity:0.2;filter:blur(2px)}
+}
+@keyframes flowBehind2{
+  0%{transform:translate(35vw,22vh) scale(0.6) rotate(-0.3deg);opacity:0.2;filter:blur(2px)}
+  12%{transform:translate(18vw,8vh) scale(0.55) rotate(0.2deg);opacity:0.15;filter:blur(2.5px)}
+  25%{transform:translate(-8vw,-6vh) scale(0.5) rotate(-0.4deg);opacity:0.1;filter:blur(3px)}
+  37%{transform:translate(-28vw,10vh) scale(0.55) rotate(0.3deg);opacity:0.15;filter:blur(2.5px)}
+  50%{transform:translate(-35vw,-18vh) scale(0.6) rotate(-0.2deg);opacity:0.2;filter:blur(2px)}
+  62%{transform:translate(-15vw,-10vh) scale(0.55) rotate(0.4deg);opacity:0.15;filter:blur(2.5px)}
+  75%{transform:translate(10vw,8vh) scale(0.5) rotate(-0.3deg);opacity:0.1;filter:blur(3px)}
+  87%{transform:translate(28vw,-6vh) scale(0.55) rotate(0.2deg);opacity:0.15;filter:blur(2.5px)}
+  100%{transform:translate(35vw,22vh) scale(0.6) rotate(-0.3deg);opacity:0.2;filter:blur(2px)}
+}
+
 .hero-vignette{position:absolute;inset:0;z-index:3;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 0%,transparent 30%,rgba(0,0,0,0.4) 100%)}
 
 /* CINEMATIC TEXT REVEAL */
@@ -1128,52 +1152,52 @@ Trusted by tradespeople across the UK
 <div class="faq-list">
 
 <div class="faq-item reveal reveal-d1">
-<div class="faq-question" onclick="toggleFaq(this)">Do you work with sole traders or just bigger companies?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-question" role="button" tabindex="0" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this)}">Do you work with sole traders or just bigger companies?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
 <div class="faq-answer"><div class="faq-answer-inner">We work with tradespeople of all sizes — from sole traders to small teams. Most of our clients are one or two-person operations who need reliable back-office support without the cost of hiring someone full-time.</div></div>
 </div>
 
 <div class="faq-item reveal reveal-d2">
-<div class="faq-question" onclick="toggleFaq(this)">What trades do you work with?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-question" role="button" tabindex="0" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this)}">What trades do you work with?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
 <div class="faq-answer"><div class="faq-answer-inner">We support all trades — electricians, plumbers, gas engineers, builders, roofers, landscapers, and more. If you're a tradesperson drowning in admin, we can help.</div></div>
 </div>
 
 <div class="faq-item reveal reveal-d3">
-<div class="faq-question" onclick="toggleFaq(this)">Do you answer calls on my behalf?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-question" role="button" tabindex="0" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this)}">Do you answer calls on my behalf?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
 <div class="faq-answer"><div class="faq-answer-inner">Yes. We answer your calls professionally in your business name, take messages, book appointments, and make sure you never miss a lead while you're on the tools.</div></div>
 </div>
 
 <div class="faq-item reveal reveal-d4">
-<div class="faq-question" onclick="toggleFaq(this)">How does the quoting and invoicing work?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-question" role="button" tabindex="0" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this)}">How does the quoting and invoicing work?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
 <div class="faq-answer"><div class="faq-answer-inner">You send us the job details and we prepare professional quotes and invoices on your behalf. We chase up outstanding payments too, so you get paid faster without the awkward conversations.</div></div>
 </div>
 
 <div class="faq-item reveal">
-<div class="faq-question" onclick="toggleFaq(this)">Do I need to be locked into a long contract?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-question" role="button" tabindex="0" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this)}">Do I need to be locked into a long contract?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
 <div class="faq-answer"><div class="faq-answer-inner">No. We keep things flexible because that's how tradespeople work. Get in touch and we'll find an arrangement that suits you.</div></div>
 </div>
 
 <div class="faq-item reveal">
-<div class="faq-question" onclick="toggleFaq(this)">Are you based in the UK?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-question" role="button" tabindex="0" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this)}">Are you based in the UK?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
 <div class="faq-answer"><div class="faq-answer-inner">Yes, we're a UK-based business supporting tradespeople across the country. We work remotely so it doesn't matter where you're based.</div></div>
 </div>
 
 <div class="faq-item reveal">
-<div class="faq-question" onclick="toggleFaq(this)">What's the difference between Multicore and hiring a VA?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-question" role="button" tabindex="0" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this)}">What's the difference between Multicore and hiring a VA?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
 <div class="faq-answer"><div class="faq-answer-inner">We specialise in the trades. We understand the language, the job types, and what your customers expect. A general VA won't know the difference between a first fix and a second fix — we do.</div></div>
 </div>
 
 <div class="faq-item reveal">
-<div class="faq-question" onclick="toggleFaq(this)">Can you manage my emails and diary?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-question" role="button" tabindex="0" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this)}">Can you manage my emails and diary?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
 <div class="faq-answer"><div class="faq-answer-inner">Absolutely. We manage your inbox, filter out the noise, respond to enquiries, and keep your schedule organised so you always know where you need to be.</div></div>
 </div>
 
 <div class="faq-item reveal">
-<div class="faq-question" onclick="toggleFaq(this)">Do you work evenings and weekends?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-question" role="button" tabindex="0" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this)}">Do you work evenings and weekends?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
 <div class="faq-answer"><div class="faq-answer-inner">Our standard hours are Monday to Friday, 8am to 6pm. If you need cover outside those hours, get in touch and we can discuss what works for you.</div></div>
 </div>
 
 <div class="faq-item reveal">
-<div class="faq-question" onclick="toggleFaq(this)">How do I get started?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+<div class="faq-question" role="button" tabindex="0" onclick="toggleFaq(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFaq(this)}">How do I get started?<svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
 <div class="faq-answer"><div class="faq-answer-inner">Just give us a call on 020 8049 5144 or fill in the contact form below. We'll have a chat about what you need and show you how we can help.</div></div>
 </div>
 
@@ -1219,14 +1243,14 @@ Mon &ndash; Fri: 8am &ndash; 6pm
 <form class="contact-form" id="contactForm" onsubmit="handleContactSubmit(event)">
 <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
 <div class="form-row">
-<div class="form-group"><label>Name</label><input type="text" name="name" placeholder="Your full name" required></div>
-<div class="form-group"><label>Email</label><input type="email" name="email" placeholder="you@company.co.uk" required></div>
+<div class="form-group"><label for="cf-name">Name</label><input id="cf-name" type="text" name="name" placeholder="Your full name" required></div>
+<div class="form-group"><label for="cf-email">Email</label><input id="cf-email" type="email" name="email" placeholder="you@company.co.uk" required></div>
 </div>
 <div class="form-row">
-<div class="form-group"><label>Phone</label><input type="tel" name="phone" placeholder="07xxx xxx xxx"></div>
-<div class="form-group"><label>Business Name</label><input type="text" name="business" placeholder="Your business name"></div>
+<div class="form-group"><label for="cf-phone">Phone</label><input id="cf-phone" type="tel" name="phone" placeholder="07xxx xxx xxx"></div>
+<div class="form-group"><label for="cf-business">Business Name</label><input id="cf-business" type="text" name="business" placeholder="Your business name"></div>
 </div>
-<div class="form-group"><label>Message</label><textarea name="message" placeholder="Tell us about your business and what support you need..."></textarea></div>
+<div class="form-group"><label for="cf-message">Message</label><textarea id="cf-message" name="message" placeholder="Tell us about your business and what support you need..."></textarea></div>
 <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Send Message</button>
 </form>
 </div>
