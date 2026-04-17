@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multicore Social Image</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#06101e;--blue:#3871c1;--amber:#f68712;--green:#40b93c}
+html,body{overflow:hidden;width:100%;height:100%;background:#040a14}
+
+/* HERO */
+.hero{position:relative;width:100%;height:100vh;display:flex;align-items:center;overflow:hidden;background:#040a14}
+.hero-canvas{position:absolute;inset:0;z-index:0;width:100%;height:100%}
+
+/* ANIMATED GRID MESH */
+.hero-grid{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0.04;
+background-image:linear-gradient(rgba(56,113,193,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(56,113,193,0.5) 1px,transparent 1px);
+background-size:60px 60px;animation:gridDrift 20s linear infinite}
+@keyframes gridDrift{0%{background-position:0 0}100%{background-position:60px 60px}}
+
+/* CINEMATIC LIGHT SWEEP */
+.hero-sweep{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.hero-sweep::before{content:'';position:absolute;top:-10%;left:-120%;width:80%;height:120%;background:linear-gradient(105deg,transparent 0%,transparent 40%,rgba(56,113,193,0.06) 45%,rgba(56,113,193,0.12) 50%,rgba(255,255,255,0.04) 50.5%,rgba(56,113,193,0.06) 55%,transparent 60%,transparent 100%);animation:lightSweep 8s cubic-bezier(0.4,0,0.2,1) infinite;animation-delay:2s}
+@keyframes lightSweep{0%,100%{transform:translateX(0) rotate(0deg)}40%{transform:translateX(280%) rotate(0deg)}41%,100%{transform:translateX(280%) rotate(0deg);opacity:0}0%{opacity:1}}
+
+/* HORIZONTAL SCAN LINE */
+.hero-scanline{position:absolute;left:0;width:100%;height:1px;z-index:2;pointer-events:none;
+background:linear-gradient(90deg,transparent,rgba(56,113,193,0.3) 20%,rgba(56,113,193,0.6) 50%,rgba(56,113,193,0.3) 80%,transparent);
+box-shadow:0 0 20px rgba(56,113,193,0.3),0 0 60px rgba(56,113,193,0.1);
+animation:scanDown 6s ease-in-out infinite;opacity:0.5}
+@keyframes scanDown{0%{top:-2px;opacity:0}5%{opacity:0.5}50%{top:100%;opacity:0.3}51%{opacity:0}100%{opacity:0}}
+
+/* BACKGROUND GLOWS */
+.hero-bg-glow{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:1}
+.g1{width:700px;height:700px;background:rgba(56,113,193,0.15);top:5%;right:10%;animation:glow1 12s ease-in-out infinite}
+.g2{width:600px;height:600px;background:rgba(246,135,18,0.08);bottom:10%;right:30%;animation:glow2 15s ease-in-out infinite}
+.g3{width:500px;height:500px;background:rgba(56,113,193,0.1);top:30%;left:30%;animation:glow3 18s ease-in-out infinite}
+.g4{width:400px;height:400px;background:rgba(64,185,60,0.05);bottom:20%;left:10%;animation:glow4 20s ease-in-out infinite;position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:1}
+@keyframes glow1{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-60px,40px) scale(1.2)}50%{transform:translate(-40px,30px) scale(1.15)}75%{transform:translate(20px,-10px) scale(1.05)}}
+@keyframes glow2{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(30px,-20px) scale(1.05)}50%{transform:translate(50px,-40px) scale(1.1)}75%{transform:translate(-20px,30px) scale(1.15)}}
+@keyframes glow3{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-20px,10px) scale(1.1)}50%{transform:translate(-30px,-20px) scale(1.2)}75%{transform:translate(10px,-30px) scale(1.05)}}
+@keyframes glow4{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.15)}}
+
+/* CENTRAL GLOBE LOGO */
+.hero-globe{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:4;pointer-events:none;width:850px;height:850px;display:flex;align-items:center;justify-content:center}
+.hero-globe-img{width:750px;height:750px;object-fit:contain;opacity:0.35;filter:drop-shadow(0 0 60px rgba(56,113,193,0.3)) drop-shadow(0 0 120px rgba(246,135,18,0.15))}
+.hero-globe::before{content:'';position:absolute;inset:-120px;border-radius:50%;background:radial-gradient(circle,rgba(56,113,193,0.08) 0%,rgba(246,135,18,0.04) 40%,transparent 70%);animation:globePulse 4s ease-in-out infinite}
+.hero-globe::after{content:'';position:absolute;inset:-200px;border-radius:50%;border:1px solid rgba(255,255,255,0.03);animation:globeRingPulse 6s ease-in-out infinite}
+@keyframes globePulse{0%,100%{transform:scale(1);opacity:0.6}50%{transform:scale(1.15);opacity:1}}
+@keyframes globeRingPulse{0%,100%{transform:scale(1);opacity:0.3}50%{transform:scale(1.1);opacity:0.6}}
+
+/* ORBIT RINGS */
+.orbit-ring{position:absolute;top:50%;left:50%;border-radius:50%;border:1px solid rgba(255,255,255,0.03);pointer-events:none;z-index:3}
+.orbit-ring-1{width:700px;height:500px;transform:translate(-50%,-50%) rotateX(65deg);animation:ringRotate 60s linear infinite}
+.orbit-ring-2{width:900px;height:650px;transform:translate(-50%,-50%) rotateX(65deg) rotateZ(30deg);animation:ringRotate 80s linear infinite reverse}
+.orbit-ring-3{width:1100px;height:750px;transform:translate(-50%,-50%) rotateX(65deg) rotateZ(-20deg);animation:ringRotate 100s linear infinite}
+@keyframes ringRotate{from{transform:translate(-50%,-50%) rotateX(65deg) rotateZ(0deg)}to{transform:translate(-50%,-50%) rotateX(65deg) rotateZ(360deg)}}
+
+.hero-vignette{position:absolute;inset:0;z-index:3;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 0%,transparent 30%,rgba(0,0,0,0.4) 100%)}
+
+/* FLOATING PANELS — STATIC POSITIONED, LARGER */
+.float-panels{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:hidden}
+.fp{position:absolute;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px 20px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.06);width:240px;opacity:0.88}
+.fp-blue{border-color:rgba(56,113,193,0.2);box-shadow:0 8px 32px rgba(0,0,0,0.3),0 0 20px rgba(56,113,193,0.06),inset 0 1px 0 rgba(255,255,255,0.06)}
+.fp-orange{border-color:rgba(246,135,18,0.2);box-shadow:0 8px 32px rgba(0,0,0,0.3),0 0 20px rgba(246,135,18,0.06),inset 0 1px 0 rgba(255,255,255,0.06)}
+.fp-green{border-color:rgba(64,185,60,0.2);box-shadow:0 8px 32px rgba(0,0,0,0.3),0 0 20px rgba(64,185,60,0.06),inset 0 1px 0 rgba(255,255,255,0.06)}
+.fp-sm{width:210px;padding:15px 17px}
+.fp-xs{width:185px;padding:13px 15px}
+.fp-dot{position:absolute;top:12px;right:12px;width:7px;height:7px;border-radius:50%;background:#3871c1;animation:dotpulse 2.5s ease-in-out infinite}
+.fp-dot.do{background:#f68712}
+.fp-dot.dg{background:#40b93c}
+@keyframes dotpulse{0%,100%{opacity:1;box-shadow:0 0 6px currentColor}50%{opacity:0.4;box-shadow:0 0 2px currentColor}}
+.fp-title{font-family:'Montserrat',sans-serif;font-size:0.72rem;font-weight:700;color:#3871c1;letter-spacing:0.08em;margin-bottom:8px;padding:3px 8px;background:rgba(56,113,193,0.1);border-radius:4px;display:inline-block}
+.fp-title.to{color:#f68712;background:rgba(246,135,18,0.1)}
+.fp-title.tg{color:#40b93c;background:rgba(64,185,60,0.1)}
+.fp-line{font-size:0.78rem;color:rgba(255,255,255,0.5);line-height:1.6}
+.fp-val{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;margin:4px 0}
+.fp-val.amber{color:#f68712}
+.fp-val.green-t{color:#40b93c}
+.fp-tag{display:inline-block;font-family:'Montserrat',sans-serif;font-size:0.6rem;font-weight:700;padding:3px 8px;border-radius:50px;margin-top:8px;letter-spacing:0.04em}
+.fp-tag.green{background:rgba(64,185,60,0.15);color:#78e664}
+.fp-tag.orange{background:rgba(246,135,18,0.15);color:#ffb850}
+.fp-tag.blue{background:rgba(56,113,193,0.15);color:#93b9f0}
+
+/* STATIC CARD POSITIONS — hugging the globe, no overlap */
+/* Left side - stacked vertically */
+.fp-1{top:10%;left:33%;transform:rotate(-2deg)}
+.fp-3{top:30%;left:30%;transform:rotate(-1.5deg)}
+.fp-4{top:50%;left:31%;transform:rotate(1deg)}
+.fp-6{top:70%;left:33%;transform:rotate(1.5deg)}
+/* Right side - stacked vertically */
+.fp-2{top:10%;right:33%;transform:rotate(2deg)}
+.fp-5{top:30%;right:30%;transform:rotate(-1.5deg)}
+.fp-7{top:50%;right:31%;transform:rotate(-1deg)}
+.fp-8{top:70%;right:33%;transform:rotate(1deg)}
+/* Top and bottom center */
+.fp-10{top:15%;left:50%;transform:translateX(-50%) rotate(0.5deg)}
+.fp-9{bottom:15%;left:50%;transform:translateX(-50%) rotate(-1deg)}
+
+/* MULTICORE LOGO TEXT OVERLAY */
+.logo-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;text-align:center;pointer-events:none}
+.logo-overlay .logo-text{font-family:'Montserrat',sans-serif;font-size:3.5rem;font-weight:800;color:#fff;letter-spacing:1px;text-shadow:0 2px 30px rgba(0,0,0,0.6),0 4px 60px rgba(0,0,0,0.4)}
+.logo-overlay .logo-text .logo-blue{color:#1c99e1}
+.logo-overlay .logo-sub{font-family:'Montserrat',sans-serif;font-size:0.85rem;font-weight:500;color:rgba(255,255,255,0.6);letter-spacing:8px;margin-top:4px;text-shadow:0 2px 20px rgba(0,0,0,0.5)}
+</style>
+</head>
+<body>
+<section class="hero">
+<canvas class="hero-canvas" id="heroCanvas"></canvas>
+<div class="hero-grid"></div>
+<div class="hero-sweep"></div>
+<div class="hero-scanline"></div>
+<div class="hero-bg-glow g1"></div>
+<div class="hero-bg-glow g2"></div>
+<div class="hero-bg-glow g3"></div>
+<div class="g4"></div>
+<div class="hero-vignette"></div>
+
+<!-- FLOATING GLASS PANELS — STATIC -->
+<div class="float-panels">
+  <div class="fp fp-1 fp-blue"><div class="fp-dot"></div><div class="fp-title">INVOICE #1247</div><div class="fp-line">J. Harris Plumbing</div><div class="fp-line">Boiler installation</div><div class="fp-val amber">£2,450.00</div><div class="fp-tag green">SENT ✓</div></div>
+
+  <div class="fp fp-2 fp-blue"><div class="fp-dot"></div><div class="fp-title">QUOTE #892</div><div class="fp-line">Full rewire — 3 bed semi</div><div class="fp-line">Labour £3,200 · Materials £1,100</div><div class="fp-tag orange">AWAITING</div></div>
+
+  <div class="fp fp-3 fp-orange"><div class="fp-dot do"></div><div class="fp-title to">INCOMING CALL</div><div class="fp-line">Mr. Williams · 07xxx xxx xxx</div><div class="fp-line">Re: Kitchen refit · 04:32</div><div class="fp-tag green">ANSWERED ✓</div></div>
+
+  <div class="fp fp-4 fp-blue"><div class="fp-dot"></div><div class="fp-title">NEW EMAIL</div><div class="fp-line">From: info@smithbuild.co</div><div class="fp-line">Quote request — loft conversion</div><div class="fp-tag blue">REPLY</div></div>
+
+  <div class="fp fp-5 fp-green"><div class="fp-dot dg"></div><div class="fp-title tg">JOB BOOKED</div><div class="fp-line">Bathroom refit · Mr. Clarke</div><div class="fp-val green-t">£4,800</div><div class="fp-tag green">CONFIRMED ✓</div></div>
+
+  <div class="fp fp-6 fp-blue fp-sm"><div class="fp-dot"></div><div class="fp-title">CALENDAR</div><div class="fp-line">09:00 Rewire · 13:00 Quote</div><div class="fp-tag blue">TODAY</div></div>
+
+  <div class="fp fp-7 fp-blue fp-sm"><div class="fp-dot"></div><div class="fp-title">MATERIALS</div><div class="fp-line">CEF order · 6mm T&amp;E</div><div class="fp-tag green">ORDERED ✓</div></div>
+
+  <div class="fp fp-8 fp-green fp-xs"><div class="fp-dot dg"></div><div class="fp-title tg">SMS SENT</div><div class="fp-line">Appointment confirmed</div><div class="fp-tag green">✓</div></div>
+
+  <div class="fp fp-9 fp-green fp-sm"><div class="fp-dot dg"></div><div class="fp-title tg">PAYMENT</div><div class="fp-val green-t">£3,200.00</div><div class="fp-tag green">PAID ✓</div></div>
+
+  <div class="fp fp-10 fp-green fp-sm"><div class="fp-dot dg"></div><div class="fp-title tg">REVIEW</div><div class="fp-line">5 ★ · "Brilliant job, very tidy"</div><div class="fp-tag green">GOOGLE ✓</div></div>
+</div>
+
+<!-- ORBIT RINGS -->
+<div class="orbit-ring orbit-ring-1"></div>
+<div class="orbit-ring orbit-ring-2"></div>
+<div class="orbit-ring orbit-ring-3"></div>
+
+<!-- CENTRAL GLOBE LOGO -->
+<div class="hero-globe">
+  <img src="multicore-symbol.png" alt="Multicore Globe" class="hero-globe-img">
+</div>
+
+<!-- MULTICORE LOGO TEXT -->
+<div class="logo-overlay">
+  <div class="logo-text">MULTI<span class="logo-blue">CORE</span></div>
+  <div class="logo-sub">MANAGEMENT</div>
+</div>
+</section>
+
+<script>
+// ========== CINEMATIC HERO ENGINE ==========
+var c=document.getElementById('heroCanvas');
+var ctx=c.getContext('2d');
+var W=0,H=0,t=0;
+var mouseX=0.5,mouseY=0.5;
+
+function sz(){
+  W=c.width=window.innerWidth;
+  H=c.height=window.innerHeight;
+}
+sz();
+window.addEventListener('resize',sz);
+
+// Aurora blobs
+var blobs=[];
+var blobColors=[
+  {r:56,g:113,b:193},{r:56,g:113,b:193},{r:40,g:80,b:160},
+  {r:246,g:135,b:18},{r:64,g:185,b:60},{r:30,g:60,b:140},{r:80,g:140,b:210}
+];
+for(var i=0;i<7;i++){
+  blobs.push({
+    x:0.15+Math.random()*0.7,y:0.15+Math.random()*0.7,
+    r:0.2+Math.random()*0.25,col:blobColors[i],
+    sx:0.03+Math.random()*0.06,sy:0.02+Math.random()*0.05,sr:0.015+Math.random()*0.03,
+    px:Math.random()*6.28,py:Math.random()*6.28,pr:Math.random()*6.28,
+    opacity:i<3?0.12+Math.random()*0.08:0.06+Math.random()*0.06
+  });
+}
+
+// Star field
+var stars=[];
+for(var i=0;i<120;i++) stars.push({
+  x:Math.random(),y:Math.random(),
+  r:0.2+Math.random()*1.5,
+  o:0.05+Math.random()*0.3,
+  twinkleSpeed:0.3+Math.random()*2,
+  twinklePhase:Math.random()*6.28,
+  depth:0.3+Math.random()*0.7
+});
+
+// Dust
+var dust=[];
+for(var i=0;i<60;i++) dust.push({
+  x:Math.random(),y:Math.random(),
+  vy:-0.00008-Math.random()*0.00015,
+  vx:(Math.random()-0.5)*0.00006,
+  r:0.3+Math.random()*1.2,
+  o:0.02+Math.random()*0.08,
+  l:Math.random()
+});
+
+// Sparkles
+var sparkles=[];
+for(var i=0;i<80;i++) sparkles.push({
+  x:Math.random(),y:Math.random(),
+  phase:Math.random()*6.28,speed:0.5+Math.random()*2,
+  r:0.4+Math.random()*1,maxO:0.05+Math.random()*0.2
+});
+
+function animate(){
+  t+=0.004;
+  if(W===0||H===0)sz();
+  ctx.clearRect(0,0,W,H);
+
+  // Deep background
+  var bg=ctx.createLinearGradient(0,0,W*0.3,H);
+  bg.addColorStop(0,'#0a1628');bg.addColorStop(0.3,'#071220');
+  bg.addColorStop(0.6,'#060e1a');bg.addColorStop(1,'#040a14');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+  // Aurora blobs
+  for(var i=0;i<blobs.length;i++){
+    var b=blobs[i];
+    var bx=(b.x+Math.sin(t*b.sx+b.px)*0.15)*W;
+    var by=(b.y+Math.cos(t*b.sy+b.py)*0.12)*H;
+    var br=(b.r+Math.sin(t*b.sr+b.pr)*0.08)*Math.min(W,H);
+    var grad=ctx.createRadialGradient(bx,by,0,bx,by,br);
+    grad.addColorStop(0,'rgba('+b.col.r+','+b.col.g+','+b.col.b+','+b.opacity+')');
+    grad.addColorStop(0.4,'rgba('+b.col.r+','+b.col.g+','+b.col.b+','+(b.opacity*0.5)+')');
+    grad.addColorStop(0.7,'rgba('+b.col.r+','+b.col.g+','+b.col.b+','+(b.opacity*0.15)+')');
+    grad.addColorStop(1,'rgba('+b.col.r+','+b.col.g+','+b.col.b+',0)');
+    ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+  }
+
+  // Aurora streaks
+  var cols=['56,113,193','40,80,160','246,135,18','64,185,60','80,140,210'];
+  for(var i=0;i<5;i++){
+    var streakY=(0.2+i*0.15+Math.sin(t*0.3+i*1.5)*0.08)*H;
+    var streakH=(0.06+Math.sin(t*0.2+i*2)*0.03)*H;
+    var streakAlpha=0.03+Math.sin(t*0.4+i*0.8)*0.02;
+    ctx.save();ctx.globalCompositeOperation='screen';
+    var hg=ctx.createLinearGradient(0,0,W,0);
+    var offset=Math.sin(t*0.15+i*0.9)*0.2;
+    hg.addColorStop(Math.max(0,0.0+offset),'rgba('+cols[i]+',0)');
+    hg.addColorStop(Math.max(0.01,0.2+offset),'rgba('+cols[i]+','+(streakAlpha*0.8)+')');
+    hg.addColorStop(Math.min(0.99,0.6+offset),'rgba('+cols[i]+','+(streakAlpha*1.2)+')');
+    hg.addColorStop(Math.min(1,0.9+offset),'rgba('+cols[i]+',0)');
+    ctx.fillStyle=hg;ctx.fillRect(0,streakY-streakH*2,W,streakH*4);
+    ctx.restore();
+  }
+
+  // Stars
+  for(var i=0;i<stars.length;i++){
+    var s=stars[i];
+    var so=s.o*Math.max(0.2,(0.5+0.5*Math.sin(t*s.twinkleSpeed+s.twinklePhase)));
+    if(so>0.02){
+      ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.r,0,6.28);
+      ctx.fillStyle='rgba(200,220,255,'+so+')';ctx.fill();
+      if(s.r>1&&so>0.15){
+        ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.r*3,0,6.28);
+        ctx.fillStyle='rgba(180,210,255,'+(so*0.15)+')';ctx.fill();
+      }
+    }
+  }
+
+  // Dust
+  for(var i=0;i<dust.length;i++){
+    var d=dust[i];
+    d.x+=d.vx+Math.sin(t*0.3+d.l*8)*0.00002;
+    d.y+=d.vy;d.l-=0.0002;
+    if(d.l<=0||d.y<-0.03){d.x=Math.random();d.y=1.03;d.l=0.5+Math.random()*0.5;}
+    ctx.beginPath();ctx.arc(d.x*W,d.y*H,d.r,0,6.28);
+    ctx.fillStyle='rgba(180,210,255,'+(d.o*Math.min(d.l*3,1))+')';ctx.fill();
+  }
+
+  // Sparkles
+  for(var i=0;i<sparkles.length;i++){
+    var sp=sparkles[i];
+    var so=sp.maxO*Math.max(0,Math.sin(t*sp.speed+sp.phase));
+    if(so>0.01){
+      ctx.beginPath();ctx.arc(sp.x*W,sp.y*H,sp.r,0,6.28);
+      ctx.fillStyle='rgba(200,220,255,'+so+')';ctx.fill();
+    }
+  }
+
+  // Light shafts
+  ctx.save();ctx.globalCompositeOperation='screen';
+  var sway=Math.sin(t*0.1)*0.025;
+  var shafts=[{a:0.3,w:0.06,n:0.025},{a:0.5,w:0.04,n:0.018},{a:0.72,w:0.05,n:0.015}];
+  for(var si=0;si<shafts.length;si++){
+    var sh=shafts[si],fl=0.7+Math.sin(t*0.3+si*1.3)*0.3;
+    var sx=W*0.05,sy=-H*0.03,ang=sh.a+sway,len=H*2.5;
+    var ex=sx+Math.cos(ang)*len,ey=sy+Math.sin(ang)*len;
+    var hw=Math.tan(sh.w*0.5)*len,perp=ang+1.5708;
+    var sg=ctx.createLinearGradient(sx,sy,ex,ey);
+    var sa=sh.n*fl;
+    sg.addColorStop(0,'rgba(140,185,240,'+(sa*1.5)+')');
+    sg.addColorStop(0.1,'rgba(56,113,193,'+sa+')');
+    sg.addColorStop(0.45,'rgba(56,113,193,'+(sa*0.1)+')');
+    sg.addColorStop(1,'rgba(56,113,193,0)');
+    ctx.fillStyle=sg;ctx.beginPath();ctx.moveTo(sx,sy);
+    ctx.lineTo(ex+Math.cos(perp)*hw,ey+Math.sin(perp)*hw);
+    ctx.lineTo(ex-Math.cos(perp)*hw,ey-Math.sin(perp)*hw);
+    ctx.closePath();ctx.fill();
+  }
+  ctx.restore();
+
+  // Vignette
+  var v=ctx.createRadialGradient(W*0.3,H*0.45,H*0.15,W*0.3,H*0.45,H*1.1);
+  v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(0.35,'rgba(0,0,0,0)');
+  v.addColorStop(0.65,'rgba(0,0,0,0.15)');v.addColorStop(1,'rgba(0,0,0,0.5)');
+  ctx.fillStyle=v;ctx.fillRect(0,0,W,H);
+
+  // Edge fades
+  var tf=ctx.createLinearGradient(0,0,0,H*0.1);
+  tf.addColorStop(0,'rgba(5,14,27,0.4)');tf.addColorStop(1,'rgba(5,14,27,0)');
+  ctx.fillStyle=tf;ctx.fillRect(0,0,W,H*0.1);
+  var bf=ctx.createLinearGradient(0,H*0.9,0,H);
+  bf.addColorStop(0,'rgba(4,10,18,0)');bf.addColorStop(1,'rgba(4,10,18,0.45)');
+  ctx.fillStyle=bf;ctx.fillRect(0,H*0.9,W,H*0.1);
+
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+</body>
+</html>
