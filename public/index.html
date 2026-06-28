@@ -3,6 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Google Analytics (GA4) - loads only after cookie consent -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+function loadAnalytics(){
+  if(window._gaLoaded){return;} window._gaLoaded = true;
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=G-HNLTXZVLPE';
+  document.head.appendChild(s);
+  gtag('js', new Date());
+  gtag('config', 'G-HNLTXZVLPE');
+}
+if(localStorage.getItem('cookiesAccepted') === 'true'){ loadAnalytics(); }
+</script>
 <meta name="google-site-verification" content="ZmSYbBk6sdtclKPTC0llYGwo6-FU98uF8HxKWFu4j_0" />
 <title>Multicore Management | Back-Office Support for UK Tradespeople</title>
 <meta name="description" content="Multicore Management runs the back office for UK tradespeople. We answer your calls, send your quotes, chase your invoices and keep everything organised so you can stay on the tools.">
@@ -1650,7 +1665,7 @@ function handleContactSubmit(e){
 <div class="cookie-inner">
 <p>We use cookies to make the site work better for you. Carry on browsing if that's alright or hit decline if you'd rather not.</p>
 <div class="cookie-btns">
-<button class="cookie-accept" onclick="document.getElementById('cookieBanner').classList.add('hidden');localStorage.setItem('cookiesAccepted','true')">Accept</button>
+<button class="cookie-accept" onclick="document.getElementById('cookieBanner').classList.add('hidden');localStorage.setItem('cookiesAccepted','true');loadAnalytics()">Accept</button>
 <button class="cookie-decline" onclick="document.getElementById('cookieBanner').classList.add('hidden');localStorage.setItem('cookiesAccepted','false')">Decline</button>
 </div>
 </div>
