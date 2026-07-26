@@ -17,9 +17,9 @@ app.use(express.static(path.join(__dirname, 'public'), {
   etag: true
 }));
 
-// Fallback to index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// Unknown paths return a real 404 so search engines do not index duplicates
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
 });
 
 app.listen(PORT, () => {
