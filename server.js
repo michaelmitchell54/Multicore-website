@@ -14,7 +14,8 @@ app.use((req, res, next) => {
 // Serve static files from public directory
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: '7d',
-  etag: true
+  etag: true,
+  extensions: ['html']
 }));
 
 // Unknown paths return a real 404 so search engines do not index duplicates
